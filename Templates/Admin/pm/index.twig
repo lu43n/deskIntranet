@@ -1,0 +1,230 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'pm'}, 'admin', true), label: 'Wiadomości prywatne'}] %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'pm/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}      
+
+<script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.datatables.js"></script>
+<link rel="stylesheet" href="{{ baseUrl() }}/css/admin/jquery.datatables.css" type="text/css" />
+
+<style type="text/css">
+    #pmTableInbox tr.undreaded td {
+        font-weight: bold;
+        }
+</style>
+
+<div class="right-side">
+    <div class="content">
+        <h1>Lista wiadomości prywatnych:</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}   
+
+        <table id="pmTableInbox" class="dataTable">
+            <thead>
+                <tr>
+                    <th style="width: 15px;"></th>
+                    <th>Od</th>
+                    <th>Do</th>
+                    <th>Temat</th>
+                    <th>Data otrzymania</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for message in messages %}
+                <tr id="message_{{ message.pmid }}" class="{{ cycle(['', 'odd'], loop.index0) }} {% if message.unreaded %}undreaded{% endif %}">
+                    <td class="center"><input type="checkbox" name="messages[]" value="{{ message.pmid }}" /></td>
+                    <td><a href="{{ url({controller: 'pm', action: 'view', id: message.pmid}, 'admin', true) }}">{{ message.sender_name }}</a></td>
+                    <td><a href="{{ url({controller: 'pm', action: 'view', id: message.pmid}, 'admin', true) }}">{{ message.recipient_name }}</a></td>
+                    <td><a href="{{ url({controller: 'pm', action: 'view', id: message.pmid}, 'admin', true) }}">{{ message.subject }} {% if message.replies|length != 0 %} ({{ message.replies|length }}) {% endif %} {% if message.has_attachments %}<img src="{{ baseUrl }}/images/admin/attachments_small.png" alt="Załączniki" style="float: right;" />{% endif %}</a></td>
+                    <td><a href="{{ url({controller: 'pm', action: 'view', id: message.pmid}, 'admin', true) }}">{{ message.sent_at }}</a></td>
+                    <td>
+                        <a href="{{ url({controller: 'pm', action: 'view', id: message.pmid}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/view_small.png" alt="Edytuj" class="icon" /> Pokaż</a> | 
+                        <a href="#delete" name="delete-message" rel="{{ message.pmid }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń" class="icon" /> Usuń</a>
+                    </td>
+                </tr> 
+            {% endfor %}
+            </tbody>
+        </table>
+        <script type="text/javascript">
+        // <[[!CDATA 
+            $('#pmTableInbox').dataTable({ 
+                "bJQueryUI": true, 
+                "sPaginationType": "full_numbers", 
+                "oLanguage": { 
+                    "sUrl": "{{ baseUrl() }}/js/admin/datatables/pl.txt" 
+                },
+                "aaSorting": [[ 4, "desc" ]],
+                "aoColumns": [
+                    { "bSortable": false },
+                    null,
+                    null,
+                    null,
+                    null,
+                    { "bSortable": false }
+                ]
+            });
+        // ]]>
+        </script>
+
+        <script type="text/javascript">
+        // <[[!CDATA
+            $(document).ready(function(){
+
+                // Forms JavaScript
+
+                var deleteMessagesButton = $('#delete-messages');
+
+                $('#delete-messages').click(function () {
+
+                    var actionUrl = "{{ url({controller: 'pm', action: 'delete'}, 'admin', true) }}";
+                    var params    = { id: $('input[name="messages[]"]').serializeArray() };
+                    var list      = { item: '#message_', items: '#pmTableInbox' }
+
+                    $.ajax({
+                        url: actionUrl,
+                        type: "POST",
+                        data: params,
+                        dataType: "json",
+                        success: function (data) {
+                            if(data != null)
+                            {     
+                                setNotification(data.message, data.type);
+
+                                if(data.id)
+                                {
+                                    $.each(data.id, function (key, val) {
+                                        $(list.item + val).remove();
+                                    });
+
+                                    if($(list.items + ' tbody tr').size() == 0)
+                                    {
+                                        $(list.items).dataTable().fnClearTable();
+                                    }
+                                }
+                            }
+
+                            $(list.items + "tbody").children('li').each(function(index, value) {
+                                $(this).removeClass('odd');
+
+                                if(index % 2)
+                                {
+                                    $(this).addClass('odd'); 
+                                }
+                            }); 
+                            
+                            if($('input[name="messages[]"]:checked').length == 0)
+                            {
+                                deleteMessagesButton.hide();
+                            }
+                            else
+                            {
+                                deleteMessagesButton.show();
+                            }
+                        }
+                    });
+                    
+
+                    return false;
+                });
+
+                $('a[name="delete-message"]').click(function () {
+
+                    var actionUrl = "{{ url({controller: 'pm', action: 'delete'}, 'admin', true) }}";
+                    var params    = { id: { 0: { value: $(this).attr('rel') } } };
+                    var list      = { item: '#message_', items: '#pmTableInbox' }
+
+                    $.ajax({
+                        url: actionUrl,
+                        type: "POST",
+                        data: params,
+                        dataType: "json",
+                        success: function (data) {
+                            if(data != null)
+                            {     
+                                setNotification(data.message, data.type);
+
+                                if(data.id)
+                                {
+                                    $.each(data.id, function (key, val) {
+                                        $(list.item + val).remove();
+                                    });
+
+                                    if($(list.items + ' tbody tr').size() == 0)
+                                    {
+                                        $(list.items).dataTable().fnClearTable();
+                                    }
+                                }
+                            }
+
+                            $(list.items + "tbody").children('li').each(function(index, value) {
+                                $(this).removeClass('odd');
+
+                                if(index % 2)
+                                {
+                                    $(this).addClass('odd'); 
+                                }
+                            }); 
+                            
+                            if($('input[name="messages[]"]:checked').length == 0)
+                            {
+                                deleteMessagesButton.hide();
+                            }
+                            else
+                            {
+                                deleteMessagesButton.show();
+                            }
+                        }
+                    });
+                    
+                    return false;
+                });
+
+                $('input[name="messages[]"]').change(function(){
+                    if($('input[name="messages[]"]:checked').length == 0)
+                    {
+                        deleteMessagesButton.hide();
+                    }
+                    else
+                    {
+                        deleteMessagesButton.show();
+                    }
+                });
+
+                $('button[name="select-messages"]').click(function () {      
+                    cms.toggleSelect('input[name="messages[]"]');
+
+                    if($('input[name="messages[]"]:checked').length == 0)
+                    {
+                        deleteMessagesButton.hide();
+                    }
+                    else
+                    {
+                        deleteMessagesButton.show();
+                    }
+                });      
+        
+            });
+        // ]]>
+        </script>
+    </div>
+</div>
+ 
+
+
+{% endblock %}

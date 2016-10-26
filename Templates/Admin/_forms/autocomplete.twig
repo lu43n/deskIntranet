@@ -1,0 +1,2 @@
+<input name="{{ name }}" id="{{ name }}" value="{{ value|e }}" type="hidden" />
+<input name="{{ name }}-autocomplete" id="{{ name }}-autocomplete" value="{{ value|e }}" type="text" {% if attributes %}{% for attribute, value in attributes %}{{ attribute }}="{{ value|e }}"{% endfor %}{% endif %} />

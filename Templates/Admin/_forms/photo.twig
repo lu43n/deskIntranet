@@ -1,0 +1,84 @@
+{% set id = random() %}
+
+<script type="text/javascript">
+    
+var fileManager = {    
+    "closeDialog": function (id)
+    {
+        $('#dialog_' + id).dialog('close');
+    }
+};
+
+$(document).ready(function () {
+    $('#attachment_{{ id }}').bind('click',function () {
+        
+        var link = "{{ url({controller: 'files', action: 'file-manager', 'target': 'files_' ~ id, 'dialog_id': id, mime: 'image'}, 'admin', true) }}";
+        
+        $('<div>').attr('id', 'dialog_{{ id }}').append('<iframe src="' + link + '" style="width: 100%; height: 100%; border: 0;"></iframe>').dialog({ 
+            width: 940,
+            height: 520,
+            modal: true,
+            title: "Menadżer plików"
+        });
+        
+        return false;
+    });
+    
+    $('#files_{{ id }}').bind('addFile', function (event, url, name, mime, hash) {
+        if(!$('#file_{{ id }}_' + hash).length)
+        {
+            html =  '<li id="file_{{ id }}_' + hash + '" class="element-list-item">' + 
+                    '<span><a href="' + url + '" target="_blank">' + name + '</a></span>' + 
+                    '<a href="#deleteFile_{{ id }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" style="float: right;" alt="Usuń" /></a>' + 
+                    '<input type="hidden" name="{{ name }}" id="{{ name }}" value="' + name + ',' + url + '" />' + 
+                    '</li>';
+
+            $('#files_{{ id }}').html(html);
+            
+            $('#files_{{ id }}').children('li').each(function(index, value) {
+                $(this).removeClass('odd');
+
+                if(index % 2)
+                {
+                    $(this).addClass('odd'); 
+                }
+            }); 
+        }
+        
+        if($('#files_{{ id }} li').length)
+        {
+            $('#file_empty_{{ id }}').hide();
+        }
+    });
+    
+    $('#files_{{ id }} a[href="#deleteFile_{{ id }}"]').live('click', function () {
+    
+        $(this).parent('li').remove();
+        
+        if(!$('#files_{{ id }} li[id!="file_empty_{{ id }}"]').length)
+        {
+            $('#file_empty_{{ id }}').show();
+        }
+    });
+
+
+});
+</script>
+
+<div style="margin: 2px;">
+    <a href="#" id="attachment_{{ id }}"><img src="{{ baseUrl() }}/images/admin/add_small.png" alt="Załącz plik" style="position: relative; top: 3px;" /> Załącz plik</a>
+    
+    <ol id="files_{{ id }}" style="margin-top: 10px; border-top: 1px solid #ccc;">
+    {% for file in value %}
+        <li id="file_{{ id }}" class="element-list-item {{ cycle(['', 'odd'], loop.index) }}">
+            <span><a href="{{ file.url }}" target="_blank">{{ file.name }}</a></span>
+            <a href="#deleteFile_{{ id }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" style="float: right;" alt="Usuń" /></a>            
+            <input type="hidden" name="{{ name }}" id="{{ name }}" value="{{ file.name|url_encode() }},{{ file.url|url_encode() }}" />
+        </li>
+    {% else %}
+        <li id="file_empty_{{ id }}" class="element-list-item" style="color: #ccc;">
+            Brak załączników
+        </li>
+    {% endfor %}
+    </ol>
+</div>

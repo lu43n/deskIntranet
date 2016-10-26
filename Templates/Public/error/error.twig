@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="pl" />
+
+    <title>Błąd 404 - deskCMS</title>
+
+</head>
+
+<body>
+    <h1>Wystąpił nieoczekiwany błąd</h1>
+    <h2>{{ message }}</h2>
+
+    {% if exception is defined %}
+
+    <h3>Informacje o wyjątku:</h3>
+    <p>
+    <b>Wiadomość:</b> {{ exception.getMessage() }}
+    </p>
+
+    <h3>Śledzenie wyjątku:</h3>
+    <pre>{{ exception.getTraceAsString() }}</pre>
+
+    <h3>Parametry żądania:</h3>
+    <pre>{{ dump(request.getParams()) }}
+    </pre>
+
+    {% endif %}
+</body>
+</html>

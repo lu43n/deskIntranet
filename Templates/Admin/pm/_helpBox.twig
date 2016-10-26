@@ -1,0 +1,19 @@
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Akcje</h2>
+    <ul>
+        <li>
+            <a href="{{ url({ controller: 'pm', action: 'create'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/send_small.png" alt="Stwórz nową" /> Stwórz nową</a>
+        </li>
+
+        {% if request.getActionName() == 'view' %}
+        <li>
+            <a href="{{ url({controller: 'pm', action: 'index'}, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        <li id="delete-messages" style="display: none;">
+            <a href="{{ url({controller: 'pm', action: 'delete-messages'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń zaznaczone" /> Usuń zaznaczone</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div> 

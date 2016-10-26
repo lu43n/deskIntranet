@@ -1,0 +1,19 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'support'}, 'admin', true), label: 'Pomoc'}] %}
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <p>
+
+        </p>
+    </div>
+</div>
+
+{% endblock %}

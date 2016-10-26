@@ -1,0 +1,68 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'documents', action: 'view', id: documents.0.document.did}, 'admin'), label: 'Podgląd dokumentu "' ~ documents.0.document.name ~ '"'}] %}
+
+    {% for breadcrumb in breadcrumbs %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'documents', id: breadcrumb.did}, 'admin', true), label: breadcrumb.title}]) %}
+    {% endfor %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'documents'}, 'admin', true), label: 'Dokumenty'}]) %}
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'documents/_helpBox.twig' %}   
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+           <div class="tabs">
+                <ul>      
+                    {% for document in documents %}
+                    <li><a href="#{{ document.language_code }}">{{ document.language_title }}</a></li>    
+                    {% endfor %}
+                </ul>
+                   
+                {% for document in documents %}
+                <div id="{{ document.language_code }}">
+                    <h1>{{ document.document.translation.title|default('Brak tytułu') }}</h1>
+                    <div style="margin: 0 0 10px 5px;">
+                        <div style="padding: 5px 5px 10px 5px; border-bottom: 1px solid #ccc;">
+                            <a href="{{ url({controller: 'employees', action: 'view', id: document.document.uid}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_user.gif" class="icon" /> <strong>{{ document.document.user.firstname }} &lt;{{ document.document.user.username }}&gt; {{ document.document.user.lastname }}</strong></a>
+                            <div style="float: right; padding: 3px; color: #333;">
+                                {{ document.document.created_at }}
+                            </div>
+                        </div>
+                        <div style="padding: 15px 5px 15px 5px; border-bottom: 1px solid #ccc;">
+                            {{ document.document.translation.content|raw }}
+                        </div>
+                        {% if document.document.translation.attachments %}
+                        <div style="padding: 5px;">
+                            <strong>Liczba załączników: {{ document.document.translation.attachments|length }}</strong>
+                            <ol style="margin-top: 5px;">
+                                {% for attachment in document.document.translation.attachments %}
+                                <li style="list-style: none; padding: 5px;">
+                                    <strong>{{ attachment.name }}</strong><br/>
+                                    <a href="{{ attachment.url }}" target="_blank">Pobierz</a>
+                                </li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>    
+                {% endfor %}
+            </div>
+
+        <script type="text/javascript">
+        // <[[!CDATA
+                $('.tabs').tabs();  
+        // ]]>
+        </script>
+        
+</div>          
+{% endblock %}

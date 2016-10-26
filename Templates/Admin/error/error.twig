@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="pl" />
+
+    <title>Błąd - Panel Administracyjny - deskCMS</title>
+
+    <link rel="stylesheet" href="{{ baseUrl }}/css/admin/style.css" type="text/css" />
+
+</head>
+
+<body>
+
+    <div id="wrap">
+        <div id="top">
+                <a href="{{ url({controller: 'index', action: 'index'}, 'admin', true) }}" class="logo"><img src="{{ baseUrl }}/images/admin/panel_logo.png" alt="deskCMS" /></a>
+        </div>
+
+        <div id="main">
+            <div class="full-side">
+                <div class="content">
+                    <h1>Wystąpił nieoczekiwany błąd</h1>
+                    <h2>{{ message }}</h2>
+
+                    {% if exception is defined %}
+
+                    <h3>Informacje o wyjątku:</h3>
+                    <p>
+                    <b>Wiadomość:</b> {{ exception.getMessage() }}
+                    </p>
+
+                    <h3>Śledzenie wyjątku:</h3>
+                    <pre>{{ exception.getTraceAsString() }}</pre>
+
+                    <h3>Parametry żądania:</h3>
+                    <pre>{{ dump(request.getParams()) }}
+                    </pre>
+                    {% else %}
+                    <p>Powiadom administratora o tym fakcie pisząc na adres <a href="{{ developer.email }}">{{ developer.email }}</a></p>
+                    {% endif %}
+                </div>           
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

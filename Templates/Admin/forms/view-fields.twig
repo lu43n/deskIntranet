@@ -1,0 +1,146 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'forms', action: 'viewFields', id: form.fid}, 'admin'), label: 'Lista pól formularza'}] %}
+
+    {% for breadcrumb in breadcrumbs %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'forms', id: breadcrumb.fid}, 'admin', true), label: breadcrumb.title}]) %}
+    {% endfor %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'forms'}, 'admin', true), label: 'Formularze'}]) %}
+
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+    $(document).ready(function(){    
+
+        // Fields JavaScript
+
+        var deleteFieldsButton = $('#delete-fields');
+
+        $('#delete-fields').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'forms', action: 'delete-fields'}, 'admin', true) }}";
+            var params    = { id: $('input[name="fields[]"]').serializeArray() };
+            var list      = { item: '#field_', items: '#listFields' }
+
+            var callback = function () {
+                if($('input[name="fields[]"]:checked').length == 0)
+                {
+                    deleteFieldsButton.hide();
+                }
+                else
+                {
+                    deleteFieldsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('a[name="delete-field"]').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'forms', action: 'delete-fields'}, 'admin', true) }}";
+            var params    = { id: { 0: { value: $(this).attr('rel') } } };
+            var list      = { item: '#field_', items: '#listFields' }
+
+            var callback = function () {
+                if($('input[name="fields[]"]:checked').length == 0)
+                {
+                    deleteFieldsButton.hide();
+                }
+                else
+                {
+                    deleteFieldsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('input[name="fields[]"]').change(function(){
+            if($('input[name="fields[]"]:checked').length == 0)
+            {
+                deleteFieldsButton.hide();
+            }
+            else
+            {
+                deleteFieldsButton.show();
+            }
+        });
+
+        $('button[name="select-fields"]').click(function () {      
+            cms.toggleSelect('input[name="fields[]"]');
+
+            if($('input[name="fields[]"]:checked').length == 0)
+            {
+                deleteFieldsButton.hide();
+            }
+            else
+            {
+                deleteFieldsButton.show();
+            }
+        });    
+
+        var actionUrl = "{{ url({controller: 'forms', action: 'sort-fields'}, 'admin', true) }}";
+        var list      = { sortable: 'input[name="_fields[]"]', items: '#listFields' }
+
+        cms.sortable(actionUrl, list);
+    });
+    </script>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'forms/_helpBox.twig' %} 
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Lista pól formularza:</h1>
+        
+        <ol class="listView" id="listFields">
+            {% for field in fields %}
+            <li class="item {{ cycle(['', 'odd'], loop.index0) }}" id="field_{{ field.ffid }}">
+                <div class="normal">
+                    <input type="hidden" name="_fields[]" value="{{ field.ffid }}" />
+                    <input type="checkbox" name="fields[]" value="{{ field.ffid }}" />
+                    {{ field.translation.label }}
+                    <span class="actionBox">
+                        <a href="{{ url({ controller: 'forms', action: 'edit-field', id: field.ffid }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/edit_small.png" alt="Edytuj" /> Edytuj</a> | 
+                        <a href="{{ url({ controller: 'forms', action: 'delete-fields', id: field.ffid }, 'admin', true) }}" name="delete-field" rel="{{ field.ffid }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń" /> Usuń</a>
+                    </span>
+                </div>
+                <div class="extend">
+                    Opis: <strong>{{ field.translation.description|default("brak") }}</strong>
+                     &nbsp; Nazwa pola: <strong>{{ field.name }}</strong>
+                     &nbsp; Typ pola: <strong>{{ field.type|default("brak") }}</strong>
+                     &nbsp; Walidatory: <strong>{{ field.validators|default("brak") }}</strong>
+                     &nbsp; Filtry: <strong>{{ field.filters|default("brak") }}</strong>
+                     &nbsp; Wartość domyślna: <strong>{{ field.translation.default|default("brak") }}</strong>
+                </div>
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        
+        <div style="margin-top: 15px;">
+            <button name="select-fields" class="button">Zaznacz/Odznacz wszystkie</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

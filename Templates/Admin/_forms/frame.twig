@@ -1,0 +1,20 @@
+<div class="form">
+    {% if messages|length > 0 %}
+    <div class="messages">
+        {% for message in messages.errors %}
+        <div class="message error">
+        {{ message }}
+        </div>
+        {% endfor %}
+        {% for message in messages.success %}
+        <div class="message success">
+            {{ message }}
+        </div>
+        {% endfor %}    
+    </div>
+    {% endif %}    
+
+    <fieldset>
+        {{ content|raw }}
+    </fieldset>
+</div>

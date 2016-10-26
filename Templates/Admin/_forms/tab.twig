@@ -1,0 +1,11 @@
+{% if messages|length > 0 %}
+    <div class="messages">
+        {% for message in messages.errors %}
+            <div class="message error">
+            {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{{ content|raw }}

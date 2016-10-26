@@ -1,0 +1,10 @@
+{% macro breadcrumbs(list) %}
+    
+    {% if list %}
+        {% for element in list %}
+        <a href="{{ element.url }}" {% if not loop.first %}class="odd"{% endif %}>{{ element.label }}</a> {% if not loop.last %}&laquo;{% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% endmacro %}
+    

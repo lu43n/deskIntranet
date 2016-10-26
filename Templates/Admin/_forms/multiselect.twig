@@ -1,0 +1,5 @@
+  <select name="{{ name }}" id="{{ name }}" {% if attributes %}{% for attribute, value in attributes %}{{ attribute }}="{{ value|e }}"{% endfor %}{% endif %}>
+      {% for optionValue, option in options %}
+          <option value="{{ optionValue }}" {% if value == optionValue %}selected="selected"{% endif %}>{{ option }}</option>
+      {% endfor %}
+  </select>

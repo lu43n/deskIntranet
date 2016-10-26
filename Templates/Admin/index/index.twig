@@ -1,0 +1,209 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [] %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'index'}, 'admin', true), label: 'Pulpit'}]) %}
+
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block stylesheets %}
+<style type="text/css">
+    #portlets { overflow: hidden; }
+    .column { width: 33.3%; float: left; padding-bottom: 10px; }
+    .portlet { margin: 0 1em 1em 0; border: 1px solid #ccc; background: #fff; }
+    .portlet-header { color: #fff; background: #434343; margin: 0.3em; padding: 4px 4px 6px 10px; font-weight: bold; }
+    .portlet-header .ui-icon { float: right; }
+    .portlet-content { padding: 2px 5px; clear: both; overflow: hidden; }
+    .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
+    .ui-sortable-placeholder * { visibility: hidden; }
+    
+    .portlet-content ul li {
+        list-style: none;
+        border-bottom: 1px dotted #ddd;
+        padding: 8px 5px 10px 5px;
+    }
+    
+    .portlet-content ul li.featured {
+        background: #FFFFCC;
+    }
+    
+    .portlet-content ul li h3 {
+        margin: 2px 0;
+        padding: 0;
+        font-size: 12px;
+    }
+    
+    .portlet-content ul li span {
+        display: block;
+        font-size: 11px;
+        color: #808080;
+        font-weight: normal;
+    }
+    
+    .portlet-content ul li p {
+        margin: 15px 0;
+        padding: 0;
+        font-size: 11px;
+        text-align: justify;
+    }
+    
+    .portlet-content ul li div.info {
+        clear: both;
+        overflow: hidden;
+        font-size: 11px;
+        color: #808080;
+    }
+    
+    .portlet-content ul li div.info span {
+        display: block;
+        float: left;
+    }
+    
+    .portlet-content ul li div.info a {
+        display: block;
+        float: right;
+    }
+    
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+$(function() {
+
+
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="right-side">
+    <div class="content">
+        <div id="portlets">
+            <div class="column">
+                <div class="portlet" id="1_1">
+                    <div class="portlet-header">Aktualności</div>
+                    <div class="portlet-content">
+                        <ul>
+                            {% if featured_newses and newses %}
+                            {% for news in featured_newses %}
+                            <li class="featured">
+                                <h3>{{ news.translation.title }}</h3>
+                                <span>Opublikowano: {{ news.created_at }}</span>
+                                <p>{{ news.translation.content|striptags|slice(0,250) }}..</p>
+                                <div class="info">
+                                    <span>Autor: {{ news.user.firstname }} {{ news.user.lastname }}</span>
+                                    <a href="{{ url({controller: 'news', action: 'view', id: news.nid}, 'admin', true) }}">czytaj więcej &raquo;</a>
+                                </div>
+                            </li>
+                            {% endfor %}  
+                            {% for news in newses %}
+                            <li>
+                                <h3>{{ news.translation.title }}</h3>
+                                <span>Opublikowano: {{ news.created_at }}</span>
+                                <p>{{ news.translation.content|striptags|slice(0,250) }}..</p>
+                                <div class="info">
+                                    <span>Autor: {{ news.user.firstname }} {{ news.user.lastname }}</span>
+                                    <a href="{{ url({controller: 'news', action: 'view', id: news.nid}, 'admin', true) }}">czytaj więcej &raquo;</a>
+                                </div>
+                            </li>
+                            {% endfor %}  
+                            {% else %}
+                            <li style="text-align: center; border: none;">
+                                Brak aktualności
+                            </li>
+                            {% endif %}
+                        </ul>
+                        {% if featured_newses and newses %}
+                        <br />
+                        <a href="{{ url({controller: 'news'}, 'admin', true) }}" style="float: right; margin: 5px;">Więcej aktualności &raquo;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="portlet" id="2_1">
+                    <div class="portlet-header">Nadchodzące wydarzenia</div>
+                    <div class="portlet-content">
+                        <ul>
+                            {% if featured_events and events %}
+                            {% for event in featured_events %}
+                            <li class="featured">
+                                <a href="{{ url({controller: 'events', action: 'view', id: event.eid}, 'admin', true) }}"><h3>{{ event.translation.title }}</h3></a>
+                                <span>Data: {{ event.starting_at }} {% if event.ending_at %}do {{ event.ending_at }}{% endif %}</span>
+                                <div class="info">
+                                    <span>Autor: {{ event.user.firstname }} {{ event.user.lastname }}</span>
+                                </div>
+                            </li>
+                            {% endfor %}  
+                            {% for event in events %}
+                            <li>
+                                <a href="{{ url({controller: 'events', action: 'view', id: event.eid}, 'admin', true) }}"><h3>{{ event.translation.title }}</h3></a>
+                                <span>Data: {{ event.starting_at }} {% if event.ending_at %}do {{ event.ending_at }}{% endif %}</span>
+                                <div class="info">
+                                    <span>Autor: {{ event.user.firstname }} {{ event.user.lastname }}</span>
+                                </div>
+                            </li>
+                            {% endfor %}       
+                            {% else %}
+                            <li style="text-align: center; border: none;">
+                                Brak nadchodzących wydarzeń
+                            </li>
+                            {% endif %}
+                        </ul>
+                        {% if featured_events and events %}
+                        <br />
+                        <a href="{{ url({controller: 'events'}, 'admin', true) }}" style="float: right; margin: 5px;">Więcej wydarzeń &raquo;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="portlet" id="3_1">
+                    <div class="portlet-header">Ostatio edytowane dokumenty</div>
+                    <div class="portlet-content">
+                        <ul>
+                            {% if documents %}
+                            {% for document in documents %}
+                            <li>
+                                <a href="{{ url({controller: 'documents', action: 'view', id: document.did}, 'admin', true) }}"><h3>{{ document.name }}</h3></a>
+                                <span>Autor: {{ document.user.firstname }} {{ document.user.lastname }} &nbsp;&nbsp; Data modyfikacji: {{ document.modified_at }}</span>
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <li style="text-align: center; border: none;">
+                                Brak ostatnio edytowanych dokumentów
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="portlet" id="3_2">
+                    <div class="portlet-header">Ostatio zalogowani użytkownicy</div>
+                    <div class="portlet-content">
+                        <ul> 
+                            {% if users %}
+                            {% for user in users %}
+                            <li style="float: left; width: 100px; height: 115px; margin: 3px; border: 1px dotted #ccc; text-align: center;">
+                                <a href="{{ url({controller: 'employees', action: 'view', id: user.uid}, 'admin', true) }}">
+                                    <img src="{% if user.photo %}{{ user.photo.0.url }}{% else %}{{ baseUrl() }}/images/admin/no-avatar.png{% endif %}" alt="" style="width: 100px; height: 100px;" />
+                                    {{ user.firstname }} {{ user.lastname }}
+                                </a>
+                            </li>
+                            {% endfor %} 
+                            {% else %}
+                            <li style="text-align: center; border: none;">
+                                Brak ostatnio zalogowanych użytkowników
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+{% endblock %}

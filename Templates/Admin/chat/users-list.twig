@@ -1,0 +1,7 @@
+{% for user in users %}
+<li class="{{ user.state }}" id="userChatList-{{ user.uid }}">
+    <a href="#" data-action="open" data-recipientid="{{ user.uid }}">
+        <span>{{ user.firstname }} {{ user.lastname }}</span>
+    </a>
+</li>
+{% endfor %}

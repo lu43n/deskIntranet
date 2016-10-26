@@ -1,0 +1,137 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'dictionary', action: 'search', keyword: keyword}, 'admin'), label: 'Wyszukiwarka'}] %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'dictionary'}, 'admin', true), label: 'Słownik'}]) %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+    $(document).ready(function(){    
+
+        // Forms JavaScript
+
+        var deleteWordsButton = $('#delete-words');
+
+        $('#delete-words').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'dictionary', action: 'delete-words'}, 'admin', true) }}";
+            var params    = { id: $('input[name="words[]"]').serializeArray() };
+            var list      = { item: '#word_', items: '#listWords' }
+
+            var callback = function () {
+                if($('input[name="words[]"]:checked').length == 0)
+                {
+                    deleteWordsButton.hide();
+                }
+                else
+                {
+                    deleteWordsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('a[name="delete-word"]').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'dictionary', action: 'delete-words'}, 'admin', true) }}";
+            var params    = { id: { 0: { value: $(this).attr('rel') } } };
+            var list      = { item: '#word_', items: '#listWords' }
+
+            var callback = function () {
+                if($('input[name="words[]"]:checked').length == 0)
+                {
+                    deleteWordsButton.hide();
+                }
+                else
+                {
+                    deleteWordsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('input[name="words[]"]').change(function(){
+            if($('input[name="words[]"]:checked').length == 0)
+            {
+                deleteWordsButton.hide();
+            }
+            else
+            {
+                deleteWordsButton.show();
+            }
+        });
+
+        $('button[name="select-words"]').click(function () {      
+            cms.toggleSelect('input[name="words[]"]');
+
+            if($('input[name="words[]"]:checked').length == 0)
+            {
+                deleteWordsButton.hide();
+            }
+            else
+            {
+                deleteWordsButton.show();
+            }
+        });      
+    });
+    </script>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'dictionary/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Wyniki wyszukiwania frazy '{{ keyword }}':</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}           
+        
+        <ol class="listView" id="listWords">
+            {% for word in words %}
+            <li class="item {{ cycle(['', 'odd'], loop.index0) }}" id="word_{{ word.did }}">
+                <div class="normal">
+                    <input type="checkbox" name="words[]" value="{{ word.did }}" />
+                    <a href="{{ url({ controller: 'dictionary', action: 'edit', id: word.did }, 'admin', true) }}">{{ word.key }}</a>
+                    <span class="actionBox">
+                        <a href="{{ url({ controller: 'dictionary', action: 'edit', id: word.did }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/edit_small.png" alt="Edytuj" /> Edytuj</a> | 
+                        <a href="{{ url({ controller: 'dictionary', action: 'delete', id: word.did }, 'admin', true) }}" name="delete-word" rel="{{ word.did }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń" /> Usuń</a>
+                    </span>
+                </div>
+
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        
+        <div style="margin-top: 15px;">
+            <button name="select-words" class="button">Zaznacz/Odznacz wszystkie</button>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}

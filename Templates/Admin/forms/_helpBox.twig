@@ -1,0 +1,73 @@
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Formularze</h2>
+    <ul>
+        {% if request.getActionName() == 'index' and form.fid %}
+        <li>
+            <a href="{{ url({ controller: 'forms', action: 'index', id: form.parent_id }, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/folderup_small.png" alt="Przejdź poziom wyżej" /> Przejdź poziom wyżej</a>
+        </li>
+        {% endif %}
+        <li>
+            <a href="{{ url({ controller: 'forms', action: 'add-form', id: form.fid }, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/add_small.png" alt="Dodaj formularz" /> Dodaj formularz</a>
+        </li>
+        {% if request.getActionName() == 'add-form' %}
+        <li>
+            <a href="{{ url({controller: 'forms', action: 'index', id: form.fid}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        {% if request.getActionName() in ['edit-form','view-fields','add-field','edit-field'] %}
+        <li>
+            <a href="{{ url({controller: 'forms', action: 'index', id: form.parent_id}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        <li id="delete-forms" style="display: none;">
+            <a href="{{ url({controller: 'forms', action: 'delete-forms'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń zaznaczone" /> Usuń zaznaczone</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div> 
+
+{% if request.action in ['view-fields','add-field','edit-field','search'] %}
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Pola formularzy</h2>
+    <ul>
+        <li>
+            <a href="{{ url({ controller: 'forms', action: 'add-field', id: form.fid }, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/add_small.png" alt="Dodaj pole" /> Dodaj pole</a>
+        </li>
+        {% if request.getActionName() == 'add-field' %}
+        {% if form %}
+        <li>
+            <a href="{{ url({controller: 'forms', action: 'view-fields', id: form.fid}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% else %}
+        <li>
+            <a href="{{ url({controller: 'forms', action: 'index'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        {% if request.getActionName() == 'edit-field' %}
+        <li>
+            <a href="{{ url({controller: 'forms', action: 'view-fields', id: form.fid}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        <li id="delete-fields" style="display: none;">
+            <a href="{{ url({controller: 'forms', action: 'delete-fields'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń zaznaczone" /> Usuń zaznaczone</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div>
+{% endif %}
+
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Szukaj</h2>
+    <form action="{{ url({controller: 'forms', action: 'search'}, 'admin', true) }}" method="get">
+    <ul class="searchHelpBox">
+        <li>
+            <input name="keyword" type="text" class="searchQuery" value="{{ keyword }}" />
+        </li>
+    </ul>
+    </form>        
+</div>
+<div class="help_box_end"></div>   

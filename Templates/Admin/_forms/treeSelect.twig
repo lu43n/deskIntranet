@@ -1,0 +1,16 @@
+{% macro tree(id, options, name, value, attributes) %}
+    {% if options[id] %}
+        {% for option in options[id] %}
+        <option value="{{ option.value }}" {% if option.value == value %}selected="selected"{% endif %}>
+            {% for i in 0..option.depth %}- {% endfor %}
+            {{ option.title }} &nbsp;
+        </option>
+        {{ _self.tree(option.id, options, name, value, attributes) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+<select name="{{ name }}">
+    {{ _self.tree(0, options, name, value, attributes) }}  
+</select>
+    

@@ -1,0 +1,20 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{label: 'Błąd 403 - Brak uprawień'}] %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block content %}
+<div class="right-side">
+    <div class="content">
+        <h1>Błąd 403 - Brak uprawnień</h1>
+
+        <div class="messages">
+                <div class="message error">
+                    {{request.getParam('message')|default("Nie posiadasz uprawnień do modułu")}}
+                </div> 
+        </div>
+    </div>
+</div>    
+{% endblock %}

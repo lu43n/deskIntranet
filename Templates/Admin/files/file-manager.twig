@@ -1,0 +1,106 @@
+{% set id = random() %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Menadżer plików</title>
+
+		<!-- jQuery and jQuery UI (REQUIRED) -->
+		<link rel="stylesheet" type="text/css" media="screen" href="{{ baseUrl() }}/js/admin/elfinder/css/jquery.ui.css">
+		<script type="text/javascript" src="{{ baseUrl() }}/js/admin/elfinder/js/jquery/jquery.base.js"></script>
+		<script type="text/javascript" src="{{ baseUrl() }}/js/admin/elfinder/js/jquery/jquery.ui.js"></script>
+
+		<!-- elFinder CSS (REQUIRED) -->
+		<link rel="stylesheet" type="text/css" media="screen" href="{{ baseUrl() }}/js/admin/elfinder/css/elfinder.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{{ baseUrl() }}/js/admin/elfinder/css/theme.css">
+
+		<!-- elFinder JS (REQUIRED) -->
+		<script type="text/javascript" src="{{ baseUrl() }}/js/admin/elfinder/js/elfinder.min.js"></script>
+
+		<!-- elFinder translation (OPTIONAL) -->
+		<script type="text/javascript" src="{{ baseUrl() }}/js/admin/elfinder/js/i18n/elfinder.pl.js"></script>
+                {% if type == 'wysiwyg' %}     
+                <script type="text/javascript" src="{{ baseUrl() }}/js/admin/tinymce/tiny_mce_popup.js"></script>
+
+                <script type="text/javascript">
+
+                  $(document).ready(function() {
+                    var elf = $('#elfinder_{{ id }}').elfinder({
+                      url : '{{ url({controller: 'files', action: 'connector'}, 'admin', true) }}',
+                      {% if mime == 'image' %}
+                      onlyMimes: ["image"],
+                      {% endif %}
+                      commandsOptions : {
+                          getfile : {
+                            onlyURL  : false
+                          }
+                      },
+                      getFileCallback: function(file) {
+                          
+
+                          var win = tinyMCEPopup.getWindowArg('window');
+
+                          if (typeof(win) != 'undefined') 
+                          {
+                            win.document.getElementById(tinyMCEPopup.getWindowArg('input')).value = file.url;
+                              
+                            if (typeof(win.ImageDialog) != 'undefined' && win.ImageDialog.getImageData) 
+                            {
+                              win.ImageDialog.getImageData();
+                            }
+
+                            if (typeof(win.ImageDialog) != 'undefined' && win.ImageDialog.showPreviewImage) 
+                            {
+                              win.ImageDialog.showPreviewImage(file.url);
+                            }
+                          }
+                          else
+                          {
+                              html = '<a href="'+file.url+'" title="'+file.name+'" target="_blank">'+file.name+'</a>';
+                              tinyMCE.execCommand("mceInsertContent", false, html);
+                              tinyMCEPopup.execCommand("mceEndUndoLevel");
+                          }
+
+                          tinyMCEPopup.close();
+                        
+                      },
+                      lang: 'pl',
+                    }).elfinder('instance');      
+                  });
+                </script>
+                {% else %}
+                <script type="text/javascript">
+                    
+                $(document).ready(function() {
+                    var elf = $('#elfinder_{{ id }}').elfinder({
+                      url : '{{ url({controller: 'files', action: 'connector'}, 'admin', true) }}',
+                      {% if mime == 'image' %}
+                      onlyMimes: ["image"],
+                      {% endif %}
+                      commandsOptions : {
+                          getfile : {
+                            onlyURL  : false
+                          }
+                      },
+                      getFileCallback: function(file) {
+                        parent.$('#{{ target }}').trigger("addFile", [file.url, file.name, file.mime, file.hash]);
+                        window.parent.jQuery('#dialog_{{ dialog_id }}').dialog('destroy').remove();
+                        
+                        return false;
+                      },
+                      lang: 'pl'
+                    }).elfinder('instance');      
+                  });
+                  </script>
+                {% endif %}
+                
+                
+	</head>
+	<body>
+
+		<!-- Element where elFinder will be created (REQUIRED) -->
+		<div id="elfinder_{{ id }}"></div>
+
+	</body>
+</html>

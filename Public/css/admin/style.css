@@ -1,0 +1,655 @@
+* { margin: 0;	padding: 0; }
+
+body {
+	margin: 0; padding: 0;
+	font-family: Tahoma, 'Trebuchet MS', Sans-Serif;
+        font-size: 12px;
+	color: #333;
+	background: #1E1E1E url("/images/admin/wallpaper.jpg") repeat-x center center fixed;
+}
+
+a {
+	color: #003366;
+	background-color: inherit;
+	text-decoration: none;
+}
+a:hover {
+	color: #CC0001;
+	background-color: inherit;
+}
+
+
+img {
+    border: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 15px 0;
+}
+
+button.button {
+    border: 1px solid #C6C6C6;
+    font-family: Verdana;
+    background: #EAEAEA;
+    color: #5E5E5E;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 3px;
+}
+
+.clear {
+    clear: both;
+    visibility: hidden;
+}
+
+.icon {
+    position: relative;
+    top: 2px;
+}
+
+.float-left {
+    float: left;
+}
+.float-right {
+    float: right;
+}
+
+#wrap {
+    margin: 0 auto;
+    min-width: 980px;
+}
+
+#top {
+    background: transparent url("/images/admin/panel_bg.png") repeat-x top center fixed;
+    height: 50px;
+    color: #fff;
+}
+
+#top .logo {
+    float: left;
+    margin: 0 20px 0 0;
+    height: 50px;
+    position: fixed;
+}
+
+#top h2 {
+    float: left;
+    color: #fff;
+    line-height: 50px;
+    height: 50px;
+    font-size: 12px;
+    margin: 0 10px 0 0;
+    position: fixed;
+}
+
+#top ul {
+    margin-left: 185px;
+}
+
+#top ul li {
+    float: left;
+    list-style: none;
+    font-size: 12px;
+    font-weight: bold;
+    color: #c5c5c5;
+    height: 50px;
+    line-height: 50px;
+}
+
+#top ul li a, #top ul li span {
+    color: #c5c5c5;
+    display: block;
+    padding: 0 15px 0 15px;
+    cursor: pointer;
+}
+
+#top ul li a img {
+    position: relative;
+    top: 3px;
+    margin-right: 3px;
+}
+
+#top ul li.dropdown a, #top ul li.dropdown span {
+    padding: 0 25px 0 10px;
+    background: transparent url("/images/admin/panel_menu_downarrow.gif") no-repeat center right;
+}
+
+#top ul .separator {
+    background: transparent url("/images/admin/panel_menu_separator.png") no-repeat bottom center;
+    width: 1px;
+}
+
+#top ul li.dropdown ul {
+    display: none;
+    position: absolute;
+    margin-left: -1px;
+    z-index: 100;
+}
+
+#top ul li.dropdown ul li {
+    min-width: 190px;
+    height: 35px;
+    line-height: 35px;
+    z-index: 100;
+    float: none;
+    border-bottom: 1px solid #646464;
+    border-left: 1px solid #646464;
+    border-right: 1px solid #646464;
+}
+
+#top ul li.dropdown ul li a {
+    padding: 0 15px 0 15px;
+    background: #262626;
+    font-size: 11px;
+}
+
+#top ul li.dropdown ul li a:hover {
+    padding: 0 15px 0 15px;
+    background: #383838;
+    font-size: 11px;
+}
+
+#top ul li ul li a img {
+    position: relative;
+    top: 3px;
+    margin-right: 3px;
+}
+
+#main {
+    clear: both;
+}
+
+#main .left-side {
+    width: 185px;
+    float: left;
+    position: fixed;
+}
+
+#main .left-side .help_box {
+    background: transparent url("/images/admin/panel_menu_bg.png") repeat-y top right;
+}
+
+#main .left-side .help_box .logininfo {
+    padding: 10px 0 0 15px;
+    color: #000;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+#main .left-side .help_box .logininfo .login {
+    display: block;
+    margin: 5px 0 10px 0;
+}
+
+#main .left-side .help_box .logininfo .login img {
+    position: relative;
+    top: 3px;
+}
+
+
+#main .left-side .help_box_start {
+    background: transparent url("/images/admin/panel_menu_bg3.png") no-repeat top right;
+    height: 15px;
+    margin-top: 15px;
+}
+
+#main .left-side .help_box_end {
+    background: transparent url("/images/admin/panel_menu_bg2.png") no-repeat bottom right;
+    height: 15px;
+}
+
+#main .left-side .help_box h2 {
+    border-bottom: 1px solid #cdcdcd;
+    padding: 10px 0 5px 20px;
+    margin: 0 5px 0 0;
+    font-size: 14px;
+}
+
+
+#main .left-side .help_box ul li {
+    list-style: none;
+    padding: 10px 0 0 15px;
+}
+
+#main .left-side .help_box ul li a {
+    display: block;
+}
+
+#main .left-side .help_box ul li a img {
+    position: relative;
+    top: 3px;
+    margin-right: 3px;
+}
+
+#main .left-side .help_box p {
+    padding: 10px 20px 0 20px;
+}
+
+#main .right-side {
+    padding-top: 20px;
+    margin: 0 20px 0 210px;
+    z-index: 1;
+}
+
+#main .full-side {
+    padding-top: 20px;
+    margin: 0 20px 0 20px;
+    z-index: 1;
+}
+
+#main .breadcrumbs {
+    background: #2B2B2B;
+    margin: 0;
+    color: #fff;
+    padding: 0;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px 5px 5px 210px;
+    border-bottom: 1px solid #646464;
+}
+
+#main .breadcrumbs a {
+    color: #fff;
+}
+
+#main .breadcrumbs a:hover {
+    color: #ccc;
+}
+
+#main .breadcrumbs a.odd {
+    color: #848484;
+    background: none;
+}
+
+#main .content {
+    background: #fff;
+    padding: 20px;
+    -moz-border-radius-topleft: 4px; -webkit-border-top-left-radius: 4px; -khtml-border-top-left-radius: 4px; border-top-left-radius: 4px;
+    -moz-border-radius-topright: 4px; -webkit-border-top-right-radius: 4px; -khtml-border-top-right-radius: 4px; border-top-right-radius: 4px;
+    -moz-border-radius-bottomleft: 4px; -webkit-border-bottom-left-radius: 4px; -khtml-border-bottom-left-radius: 4px; border-bottom-left-radius: 4px;
+    -moz-border-radius-bottomright: 4px; -webkit-border-bottom-right-radius: 4px; -khtml-border-bottom-right-radius: 4px; border-bottom-right-radius: 4px;
+}
+
+#main .content .message {
+    padding: 10px 10px 10px 35px;
+    margin: 5px 0;
+}
+
+#main .content h1 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 2px;
+    margin:  0 0 10px 0;
+    font-size: 20px;
+}
+
+#main .content .shortcuts-icons {
+      overflow: hidden;
+}
+
+#main .content .shortcuts-icons li {
+    float: left;
+    width: 60px;
+    height: 50px;
+    margin: 10px 15px 15px 15px;
+    list-style: none;
+    text-align: center;
+}
+
+#main .content .shortcuts-icons li a span {
+    display: block;
+    text-align: center;
+}
+
+.treeCheckbox label {
+    margin: 0; 
+    padding: 0; 
+    float: none; 
+    display: inline;
+}
+
+.treeCheckbox ul li ul {
+    margin-left: 20px;
+}
+
+.treeCheckbox ul li ul {
+    display: none;
+}
+
+.treeCheckbox ul li, .permissionTree ul li ul li {
+    list-style: none;
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.treeCheckbox ul li.parent {
+    padding-left: 0;
+}
+
+.treeCheckbox ul li.parent img {
+    position: relative;
+    top: 2px;
+}
+
+.treeCheckbox li input {
+    position: relative;
+    top: 1px;
+}
+
+.tableView {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+}
+
+.tableView th {
+    background: #dcdcdc;
+    padding: 5px;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    font-size: 13px;
+}
+
+.tableView td {
+    padding: .3em 1.5em;
+    border: 1px solid #ddd;
+}
+
+.tableView tr.odd td {
+    background: #e0e0e0;
+}
+
+.tableView span {
+    display: inline;
+    padding-left: 18px;
+    font-size: 11px;
+}
+
+.tableView span.checkbox {
+    height: 13px;
+    background: url('/images/admin/cb_three_state_all.gif') 0px 1px no-repeat;
+    cursor: pointer;
+}
+
+.tableView span.checkbox-allow {
+    height: 13px;
+    background: url('/images/admin/cb_three_state_all.gif') 0px -17px no-repeat;
+    cursor: pointer;
+}
+
+.tableView span.checkbox-deny {
+    height: 13px;
+    background: url('/images/admin/cb_three_state_all.gif') 0px -35px no-repeat;
+    cursor: pointer;
+}
+
+#main .content ol.listView {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #C6C6C6;
+}
+
+#main .content .listView li {
+    list-style: none;
+    padding: 7px;
+    margin: 0;
+    border-bottom: 1px solid #C6C6C6;
+}
+
+.odd {
+    background-color: #EAEAEA;
+}
+
+#main .content .listView li .normal {
+    font-weight: bold;
+    padding: 0 0 0 0;
+}
+
+#main .content .listView li .normal .actionBox {
+    float: right;
+    padding: 0 5px;
+}
+
+#main .content .listView li .normal .actionBox a {
+    position: relative;
+    top: -1px;
+}
+
+#main .content .listView li .normal .actionBox a img {
+    position: relative;
+    top: 3px;
+}
+
+#main .content .listView li .normal input {
+    vertical-align: middle;
+    width: 20px;
+}
+
+#main .content .listView li .extend {
+    padding-left: 30px;
+    font-size: 11px;
+    color: #848484;
+    padding-top: 5px;
+}
+
+#main .content .listView li.empty div {
+    padding: 5px 0;
+}
+
+#main .content .listView li.empty {
+    cursor: auto;
+}
+
+#main .content .sortable li {
+    cursor: move;
+} 
+
+
+#throbber {
+    padding: 10px;
+    margin: 5px 0;
+    display: none;
+    position: fixed; 
+    top: 0; 
+    right: 0;
+    font-weight: bold;
+    border: 1px solid #F0C36D;
+    background: #F9EDBE;
+    border-radius: 10px;
+}
+
+#notification {
+    padding: 10px 10px 10px 35px;
+    margin: 5px 0;
+    display: none;
+    position: fixed; 
+    top: 40px; 
+    left: 50%;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.success {
+    padding-left: 35px;
+    border: 1px solid #4F8A10;
+    background: #DFF2BF url('/images/admin/success_small.png') no-repeat 10px center;
+}
+
+.error {
+    padding-left: 35px;
+    border: 1px solid #D8000C;
+    background: #FFBABA url('/images/admin/error_small.png') no-repeat 10px center;
+}
+
+.alert {
+    padding-left: 35px;
+    border: 1px solid #F0C36D;
+    background: #F9EDBE url('/images/admin/alert_small.png') no-repeat 10px center;
+}
+
+.searchHelpBox input.searchQuery {
+    border: 1px solid #C6C6C6;
+    font-family: Verdana;
+    background: #EAEAEA;
+    color: #5E5E5E;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 2px;
+    display: inline;
+    width: 130px;
+}
+.searchHelpBox input.searchButton {
+    border: 1px solid #ccc;
+    font-size: 12px;
+    display: inline;
+}
+
+#chatsList .list {
+    font-size: 11px;
+}
+
+#chatsList .list li a {
+    background: transparent url('/images/admin/chat_inactive.png') no-repeat left center;
+    padding: 3px 0;
+}
+
+#chatsList .list li a span {
+    margin-left: 25px;
+    display: block;
+}
+
+#chatsList .list li.active a {
+    background: transparent url('/images/admin/chat_active.png') no-repeat left center;
+}
+
+#chatsList .list li.message a {
+    background: transparent url('/images/admin/chat_message_user.png') no-repeat left center;
+}
+
+#chatsList .list li.unreaded a {
+    font-weight: bold;
+}
+
+#chatsList .status {
+    color: red;
+}
+
+#chatBoxes {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+#chatBoxes .chatBox {
+    position: relative;
+    float: right;
+    margin-right: 20px;
+    width: 270px;
+}
+
+#chatBoxes .chatBox .head {
+    background-color: #000;
+    padding: 5px 10px;
+    color: #ffffff;
+    border: 1px solid #000;
+    border-bottom: none;
+}
+
+#chatBoxes .chatBox .head h3 {
+    display: inline;
+    font-size: 11px;
+}
+
+#chatBoxes .chatBox .head h3 a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#chatBoxes .chatBox .head .options {
+    float: right;
+}
+
+#chatBoxes .chatBox .head .options a {
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#chatBoxes .chatBox .chat {
+    height: 200px;
+    background: #fff;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-bottom: 1px solid #999;
+    font-size: 11px;
+    border: 1px solid #999;
+}
+
+#chatBoxes .chatBox .chat .message {
+    padding: 3px 5px;
+    display: block;
+}
+
+#chatBoxes .chatBox .chat .sender {
+    background: #ddd;
+}
+
+#chatBoxes .chatBox .chat .message .from {
+    display: block;
+    font-weight: bold;
+    padding: 2px 5px;
+}
+
+#chatBoxes .chatBox .chat .message .from .date {
+    float: right;
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 10px;
+}
+
+#chatBoxes .chatBox textarea {
+    width: 258px;
+    height: 55px;
+    max-height: 55px;
+    min-height: 15px;
+    border: 1px solid #999;
+    border-top: none;
+    font-size: 11px;
+    font-family: Verdana;
+    padding: 5px 5px;
+}
+
+#chatHistory {
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+    height: 600px;
+}
+
+#chatHistory li {
+    list-style: none;
+    padding: 0;
+    margin: 10px 10px 10px 15px;
+    border-bottom: 1px dotted #ddd;    border-top: 1px dotted #ddd;
+}
+
+#chatHistory li div {
+    padding: 5px 10px;
+    margin: 0;
+}
+
+#chatHistory li.sender {
+    background: #eee;
+    margin-left: 0;
+}
+
+#chatHistory li .chatFrom {
+    background: #EAEAEA;
+}
+
+#chatHistory li .chatFrom .chatDate {
+    float: right;
+    color: #999;
+    display: none;
+}

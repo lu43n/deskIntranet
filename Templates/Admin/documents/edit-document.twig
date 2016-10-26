@@ -1,0 +1,44 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'documents', action: 'edit-document', id: document.did}, 'admin'), label: 'Edycja dokumentu "'~document.name~'"'}] %}
+
+    {% for breadcrumb in breadcrumbs %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'documents', id: breadcrumb.did}, 'admin', true), label: breadcrumb.title}]) %}
+    {% endfor %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'documents'}, 'admin', true), label: 'Dokumenty'}]) %}
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'documents/_helpBox.twig' %}   
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Edycja dokumentu "{{ document.name }}"</h1>
+        
+        {{ cmsForm|raw }}
+
+        <script type="text/javascript">
+        // <[[!CDATA
+            $(document).ready(function(){
+
+                $('.tabs').tabs();  
+
+                $('.ui-tabs-panel').each(function () {
+                        var id = $(this).has('.error').attr('id');
+                        var count = $(this).find('.error').size();
+                        $('a[href="#'+id+'"]').append(' <em>('+ count +')</em>');
+                });
+
+            });
+        // ]]>
+        </script>
+    </div>
+</div>          
+{% endblock %}

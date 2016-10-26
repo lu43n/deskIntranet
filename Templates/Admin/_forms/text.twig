@@ -1,0 +1,1 @@
+<input name="{{ name }}" id="{{ name }}" value="{{ value|e }}" type="text" {% if attributes %}{% for attribute, value in attributes %}{{ attribute }}="{{ value|e }}"{% endfor %}{% endif %} />

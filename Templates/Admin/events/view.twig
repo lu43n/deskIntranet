@@ -1,0 +1,25 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'events', action: 'view', id: event.eid}, 'admin'), label: event.translation.title}] %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'events'}, 'admin', true), label: 'Kalendarz wydarzeń'}]) %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'events/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1 style="margin: 0;">{{ event.translation.title }}</h1>
+        <span style="margin: 2px 0 10px 0; display: block; font-size: 11px; color: #999;">Autor: {{ event.user.firstname }} {{ event.user.lastname }} &nbsp; &nbsp; Opublikowano: {{ event.created_at }} &nbsp; &nbsp; Data rozpoczęcia: {{ event.starting_at }} {% if event.ending_at %} &nbsp; &nbsp; Data zakończenia: {{ event.ending_at }}{% endif %}</span>
+        <div>
+            {{ event.translation.content|raw }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

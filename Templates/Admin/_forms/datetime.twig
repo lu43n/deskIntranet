@@ -1,0 +1,66 @@
+<style type="text/css">
+    /* css for timepicker */
+    .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+    .ui-timepicker-div dl { text-align: left; }
+    .ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+    .ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+    .ui-timepicker-div td { font-size: 90%; }
+    .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+    .ui-timepicker-rtl{ direction: rtl; }
+    .ui-timepicker-rtl dl { text-align: right; }
+    .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+    
+    .ui-datepicker-trigger {
+        position: relative;
+        top: 3px;
+        left: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.datetime.js"></script>
+<script type="text/javascript">
+// <[[!CDATA
+$(document).ready(function () {
+
+    $('#{{ name }}').datetimepicker({
+            controlType: 'select',
+            timeFormat: 'hh:mm:00',
+            timeOnlyTitle: 'Tylko czas',
+            timeText: 'Czas',
+            hourText: 'Godzina',
+            minuteText: 'Minuta',
+            secondText: 'Sekunda',
+            currentText: 'Czas aktualny',
+            closeText: 'Wybierz',
+            prevText: 'Poprzedni',
+            nextText: 'Następny',
+            currentText: 'Aktualny',
+            monthNames: ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec',
+            'Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'],
+            monthNamesShort: ['sty','lut','mar','kwi','maj','cze',
+            'lip','sie','wrz','paź','lis','gru'],
+            dayNames: ['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'],
+            dayNamesShort: ['nie','pon','wto','śro','czw','pią','sob'],
+            dayNamesMin: ['nd','pon','wt','śr','cz','pt','so'],
+            weekHeader: 'Tyg',
+            dateFormat: 'dd-mm-yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: '',
+            buttonImage: "{{ baseUrl }}/images/admin/panel_menu_events.png",
+            showOn: "button",
+            buttonImageOnly: true
+    });
+    
+    $('a[href="#cancel"]').click(function () {
+        $('#' + $(this).attr('rel')).val('');
+    });
+});
+
+// ]]>
+</script>
+
+<input name="{{ name }}" id="{{ name }}" value="{{ value|e }}" type="text" {% if attributes %}{% for attribute, value in attributes %}{{ attribute }}="{{ value|e }}"{% endfor %}{% endif %} readonly="true" style="width: 150px;" /> <a href="#cancel" rel="{{ name }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" style="position: relative; top: 3px; left: 3px;" /></a>

@@ -1,0 +1,39 @@
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Akcje</h2>
+    <ul>
+        <li>
+            <a href="{{ url({ controller: 'documents', action: 'create-directory'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/add_small.png" alt="Stwórz nową" /> Stwórz folder</a>
+        </li>
+        <li>
+            <a href="{{ url({ controller: 'documents', action: 'create-document'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/add_small.png" alt="Stwórz nową" /> Stwórz dokument</a>
+        </li>
+        {% if request.getActionName() in ['edit-directory','edit-document','view'] %}
+        <li>
+            <a href="{{ url({controller: 'documents', action: 'index', id: document.parent_id}, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        {% if request.getActionName() in ['create-directory','create-document','search'] %}
+        <li>
+            <a href="{{ url({controller: 'documents', action: 'index', id: id}, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        <li id="delete-documents" style="display: none;">
+            <a href="{{ url({controller: 'documents', action: 'delete-documents'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń zaznaczone" /> Usuń zaznaczone</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div> 
+
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Szukaj</h2>
+    <form action="{{ url({controller: 'documents', action: 'search'}, 'admin', true) }}" method="get">
+    <ul class="searchHelpBox">
+        <li>
+            <input type="text" name="keyword" class="searchQuery" />
+        </li>
+    </ul>
+    </form>        
+</div>
+<div class="help_box_end"></div>    

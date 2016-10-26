@@ -1,0 +1,45 @@
+{% set random = random() %}
+
+
+
+{% macro tree(id, options, name, values, attributes) %}
+    {% if options[id] %}
+    <ul>
+        {% for option in options[id] %}
+            <li class="checkbox  {% if options[option.id] %}parent{% endif %}">
+                    {% if options[option.id] %}<a href="#expand_collapse"><img src="/images/admin/toggle-expand-dark.png" /></a> {% endif %}
+                    <label style="margin: 0; padding: 0; float: none; display: inline;">
+                        <input type="checkbox" name="{{ name }}" id="{{ name }}" value="{{ option.value }}" {% if option.id in values %}checked="checked"{% endif %} /> 
+                        <span>{{ option.title }}</span>
+                    </label>
+                    {{ _self.tree(option.id, options, name, values, attributes) }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endmacro %}
+
+<div style="overflow: hidden; margin: 0; padding: 0;" class="treeCheckbox" id="treeCheckbox-{{ random }}">   
+    {{ _self.tree(0, options, name, values, attributes) }}
+
+    <script type="text/javascript">
+    // <[[!CDATA
+        $(document).ready(function(){
+
+            $('#treeCheckbox-{{ random }} li.parent > a[href="#expand_collapse"]').toggle(function () {
+                $(this).parent().children('ul').show();
+
+                $(this).children('img').attr('src', '/images/admin/toggle-collapse-dark.png');
+
+                return false;
+            }, function () {
+                $(this).parent().children('ul').hide();
+
+                $(this).children('img').attr('src', '/images/admin/toggle-expand-dark.png');
+
+                return false;
+            });
+        });
+    // ]]>
+    </script> 
+</div>

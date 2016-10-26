@@ -1,0 +1,155 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [] %}
+
+    {% for breadcrumb in breadcrumbs %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'permissions', id: breadcrumb.pid}, 'admin', true), label: breadcrumb.title}]) %}
+    {% endfor %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'permissions'}, 'admin', true), label: 'Uprawnienia'}]) %}
+
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+    $(document).ready(function(){    
+
+        // Forms JavaScript
+
+        var deletePermissionsButton = $('#delete-permissions');
+
+        $('#delete-permissions').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'permissions', action: 'delete-permissions'}, 'admin', true) }}";
+            var params    = { id: $('input[name="permissions[]"]').serializeArray() };
+            var list      = { item: '#permission_', items: '#listPermissions' }
+
+            var callback = function () {
+                if($('input[name="permissions[]"]:checked').length == 0)
+                {
+                    deletePermissionsButton.hide();
+                }
+                else
+                {
+                    deletePermissionsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('a[name="delete-permission"]').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'permissions', action: 'delete-permissions'}, 'admin', true) }}";
+            var params    = { id: { 0: { value: $(this).attr('rel') } } };
+            var list      = { item: '#permission_', items: '#listPermissions' }
+
+            var callback = function () {
+                if($('input[name="permissions[]"]:checked').length == 0)
+                {
+                    deletePermissionsButton.hide();
+                }
+                else
+                {
+                    deletePermissionsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('input[name="permissions[]"]').change(function(){
+            if($('input[name="permissions[]"]:checked').length == 0)
+            {
+                deletePermissionsButton.hide();
+            }
+            else
+            {
+                deletePermissionsButton.show();
+            }
+        });
+
+        $('button[name="select-permissions"]').click(function () {      
+            cms.toggleSelect('input[name="permissions[]"]');
+
+            if($('input[name="permissions[]"]:checked').length == 0)
+            {
+                deletePermissionsButton.hide();
+            }
+            else
+            {
+                deletePermissionsButton.show();
+            }
+        });         
+    });
+    </script>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'permissions/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Lista uprawnień:</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}           
+
+        <div class="permissions_status"></div>
+        
+        <ol class="listView" id="listPermissions">
+            {% if permission %}
+            <li>
+                <div>
+                    <a href="{{ url({ controller: 'permissions', action: 'index', id: permission.parent_id }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/folderup_small.png" alt="Przejdź poziom wyżej" class="icon" /> &nbsp;Przejdź poziom wyżej</a>
+                </div>
+            </li>
+            {% endif %}
+            {% for permission in permissions %}
+            <li class="item {{ cycle(['', 'odd'], loop.index0) }}" id="permission_{{ permission.pid }}">
+                <div class="normal">
+                    <input type="checkbox" name="permissions[]" value="{{ permission.pid }}" />
+                    <a href="{{ url({ controller: 'permissions', action: 'index', id: permission.pid }, 'admin', true) }}">{{ permission.translation.title }}</a>
+                    <span class="actionBox">
+                        <a href="{{ url({ controller: 'permissions', action: 'edit', id: permission.pid }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/edit_small.png" alt="Edytuj" /> Edytuj</a> | 
+                        <a href="{{ url({ controller: 'permissions', action: 'delete', id: permission.pid }, 'admin', true) }}" name="delete-permission" rel="{{ permission.pid }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń" /> Usuń</a>
+                    </span>
+                </div>
+                <div class="extend">
+                     Ilość elementów podrzędnych: <strong>{{ permission.count_permissions }}</strong>
+                </div>
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        
+        <div style="margin-top: 15px;">
+            <button name="select-permissions" class="button">Zaznacz/Odznacz wszystkie</button>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}

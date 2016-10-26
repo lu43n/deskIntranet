@@ -1,0 +1,35 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'settings'}, 'admin', true), label: 'Ustawienia'}] %}
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Ustawienia:</h1>        
+            <ol class="listView" id="listSettings">
+                {% for settingsGroup in settingsGroups %}
+                <li class="item {{ cycle(['', 'odd'], loop.index0) }}" id="settingsGroup_{{ settingsGroup.fid }}">
+                    <div class="normal">
+                        <a href="{{ url({ controller: 'settings', action: 'edit', id: settingsGroup.fid }, 'admin', true) }}">{{ settingsGroup.translation.title }}</a>
+                    </div>
+                    <div class="extend" style="padding-left: 0;">
+                        {{ settingsGroup.translation.description }}
+                    </div>
+                </li>
+                {% else %}
+                <li class="empty">
+                    <div>
+                        Brak rekordów
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+    </div>
+</div>
+
+{% endblock %}

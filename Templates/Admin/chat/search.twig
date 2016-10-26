@@ -1,0 +1,54 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'chat'}, 'admin', true), label: 'Wiadomości'}] %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'chat/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Wyniki wyszukiwania czatów dla frazy '{{ keyword }}':</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}           
+        
+        <ol class="listView" id="listChats">
+            {% for chat in chats %}
+            <li class="item {{ cycle(['', 'odd'], loop.index0) }}" id="chat_{{ chat.recipient_id }}">
+                <div class="normal">
+                    {% if chat.recipient_id == identity.uid %}
+                    <a href="{{ url({ controller: 'chat', action: 'history', id: chat.sender_id }, 'admin', true) }}">{{ chat.recipient_name }}</a>
+                    {% else %}
+                    <a href="{{ url({ controller: 'chat', action: 'history', id: chat.recipient_id }, 'admin', true) }}">{{ chat.recipient_name }}</a>
+                    {% endif %}
+                </div>
+                <div class="extend" style="padding-left: 0;">
+                    {{ chat.message|slice(0, 20) }} (...)
+                </div>
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        
+    </div>
+</div>
+
+{% endblock %}

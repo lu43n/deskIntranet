@@ -1,0 +1,259 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+
+    {% set breadcrumbsList = [{url: url({controller: 'documents', action: 'search', keyword: keyword}, 'admin'), label: 'Wyszukiwarka'}] %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'documents'}, 'admin', true), label: 'Dokumenty'}]) %}
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'documents/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}      
+
+<script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.datatables.js"></script>
+<link rel="stylesheet" href="{{ baseUrl() }}/css/admin/jquery.datatables.css" type="text/css" />
+
+<style type="text/css">
+    .dataTable tbody tr td {
+        padding: 5px;
+    }
+</style>
+
+<div class="right-side">
+    <div class="content">
+        <h1>Wyniki wyszukiwania frazy '{{ keyword }}':</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}   
+
+        {% if document %}
+        <ol class="listView" style="border: none;">
+            <li>
+                <div>
+                    <a href="{{ url({ controller: 'documents', action: 'index', id: document.parent_id }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/folderup_small.png" alt="Przejdź poziom wyżej" class="icon" /> &nbsp;Przejdź poziom wyżej</a>
+                </div>
+            </li>
+        </ol>
+        {% endif %}
+        
+        <table id="documentsList" class="dataTable">
+            <thead>
+                <tr>
+                    <th style="width: 15px;"></th>
+                    <th style="width: 15px;"></th>
+                    <th>Nazwa</th>
+                    <th>Wielkość</th>
+                    <th>Data modyfikacji</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for document in documents %}
+                <tr id="document_{{ document.did }}" class="{{ cycle(['', 'odd'], loop.index0) }}">
+                    <td class="center"><input type="checkbox" name="documents[]" value="{{ document.did }}" /></td>
+                    <td class="center">
+                    {% if document.type == 'DOC' %}
+                    <img src="{{ baseUrl }}/images/admin/document-icon.png" alt="Dokument" />
+                    {% else %}
+                    <img src="{{ baseUrl }}/images/admin/folder-icon.png" alt="Folder" />
+                    {% endif %}
+                    </td>
+                    {% if document.type == 'DOC' %}
+                    <td><a href="{{ url({controller: 'documents', action: 'view', id: document.did}, 'admin', true) }}">{{ document.name }}</a> {% if document.type == 'DOC' and document.translation.attachments|length > 0 %}<img src="{{ baseUrl }}/images/admin/attachments_small.png" alt="Załączniki" class="icon" /> {% endif %}</td>
+                    {% else %}
+                    <td><a href="{{ url({controller: 'documents', action: 'index', id: document.did}, 'admin', true) }}">{{ document.name }}</a></td>
+                    {% endif %}
+                    <td>{% if document.type == 'DOC' %}{{ document.translation.content|length }} Bajty{% endif %}</td>
+                    <td>{{ document.created_at }}</td>
+                    <td>
+                        <a href="{{ url({controller: 'documents', action: 'view', id: document.did}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/view_small.png" alt="Pokaż" class="icon" /> Pokaż</a> | 
+                        {% if document.type == 'DOC' %}
+                        <a href="{{ url({controller: 'documents', action: 'edit-document', id: document.did}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/edit_small.png" alt="Edytuj" class="icon" /> Edytuj</a> | 
+                        {% else %}
+                        <a href="{{ url({controller: 'documents', action: 'edit-directory', id: document.did}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/edit_small.png" alt="Edytuj" class="icon" /> Edytuj</a> | 
+                        {% endif %}
+                        <a href="#delete" name="delete-document" rel="{{ document.did }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń" class="icon" /> Usuń</a>
+                    </td>
+                </tr> 
+            {% endfor %}
+            </tbody>
+        </table>
+        <script type="text/javascript">
+        // <[[!CDATA 
+            $('#documentsList').dataTable({ 
+                "bJQueryUI": true, 
+                "sPaginationType": "full_numbers", 
+                "oLanguage": { 
+                    "sUrl": "{{ baseUrl() }}/js/admin/datatables/pl.txt" 
+                },
+                "aaSorting": [[ 4, "desc" ]],
+                "aoColumns": [
+                    { "bSortable": false },
+                    { "bSortable": false },
+                    null,
+                    null,
+                    null,
+                    { "bSortable": false }
+                ]
+            });
+        // ]]>
+        </script>
+
+        <script type="text/javascript">
+        // <[[!CDATA
+            $(document).ready(function(){
+
+                // Forms JavaScript
+
+                var deleteMessagesButton = $('#delete-documents');
+
+                $('#delete-documents').click(function () {
+
+                    var actionUrl = "{{ url({controller: 'documents', action: 'delete'}, 'admin', true) }}";
+                    var params    = { id: $('input[name="documents[]"]').serializeArray() };
+                    var list      = { item: '#document_', items: '#documentsList' }
+
+                    $.ajax({
+                        url: actionUrl,
+                        type: "POST",
+                        data: params,
+                        dataType: "json",
+                        success: function (data) {
+                            if(data != null)
+                            {     
+                                setNotification(data.message, data.type);
+
+                                if(data.id)
+                                {
+                                    $.each(data.id, function (key, val) {
+                                        $(list.item + val).remove();
+                                    });
+
+                                    if($(list.items + ' tbody tr').size() == 0)
+                                    {
+                                        $(list.items).dataTable().fnClearTable();
+                                    }
+                                }
+                            }
+
+                            $(list.items + "tbody").children('li').each(function(index, value) {
+                                $(this).removeClass('odd');
+
+                                if(index % 2)
+                                {
+                                    $(this).addClass('odd'); 
+                                }
+                            }); 
+                            
+                            if($('input[name="documents[]"]:checked').length == 0)
+                            {
+                                deleteMessagesButton.hide();
+                            }
+                            else
+                            {
+                                deleteMessagesButton.show();
+                            }
+                        }
+                    });
+                    
+
+                    return false;
+                });
+
+                $('a[name="delete-document"]').click(function () {
+
+                    var actionUrl = "{{ url({controller: 'documents', action: 'delete'}, 'admin', true) }}";
+                    var params    = { id: { 0: { value: $(this).attr('rel') } } };
+                    var list      = { item: '#document_', items: '#documentsList' }
+
+                    $.ajax({
+                        url: actionUrl,
+                        type: "POST",
+                        data: params,
+                        dataType: "json",
+                        success: function (data) {
+                            if(data != null)
+                            {     
+                                setNotification(data.message, data.type);
+
+                                if(data.id)
+                                {
+                                    $.each(data.id, function (key, val) {
+                                        $(list.item + val).remove();
+                                    });
+
+                                    if($(list.items + ' tbody tr').size() == 0)
+                                    {
+                                        $(list.items).dataTable().fnClearTable();
+                                    }
+                                }
+                            }
+
+                            $(list.items + "tbody").children('li').each(function(index, value) {
+                                $(this).removeClass('odd');
+
+                                if(index % 2)
+                                {
+                                    $(this).addClass('odd'); 
+                                }
+                            }); 
+                            
+                            if($('input[name="documents[]"]:checked').length == 0)
+                            {
+                                deleteMessagesButton.hide();
+                            }
+                            else
+                            {
+                                deleteMessagesButton.show();
+                            }
+                        }
+                    });
+                    
+                    return false;
+                });
+
+                $('input[name="documents[]"]').change(function(){
+                    if($('input[name="documents[]"]:checked').length == 0)
+                    {
+                        deleteMessagesButton.hide();
+                    }
+                    else
+                    {
+                        deleteMessagesButton.show();
+                    }
+                });
+
+                $('button[name="select-documents"]').click(function () {      
+                    cms.toggleSelect('input[name="documents[]"]');
+
+                    if($('input[name="documents[]"]:checked').length == 0)
+                    {
+                        deleteMessagesButton.hide();
+                    }
+                    else
+                    {
+                        deleteMessagesButton.show();
+                    }
+                });      
+        
+            });
+        // ]]>
+        </script>
+    </div>
+</div>
+ 
+
+
+{% endblock %}

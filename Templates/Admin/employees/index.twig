@@ -1,0 +1,78 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'employees'}, 'admin', true), label: 'Struktura pracowników'}] %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}
+    <link rel="stylesheet" type="text/css" href="{{ baseUrl() }}/css/admin/jquery.tree.css" />
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.tree.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){    
+     
+     $('#tree').treeview();
+     
+    });
+    </script>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'employees/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Struktura pracowników:</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}           
+
+{% macro tree(gid, employees) %}
+    {% if employees[gid] %}
+        {% for employee in employees[gid] %}
+        <li>
+            <span>{{ employee.title }}</span>
+            {% if employee.users %}
+            <ul style="margin: 0; padding-bottom: 10px; {% if employees[employee.gid] %}background: url({{ baseUrl() }}/images/admin/treeview-default-line.gif) 0 0 no-repeat;{% else %}background: url({{ baseUrl() }}/images/admin/treeview-default-line.gif) 0 0 no-repeat; background-position: 0 -1766px;{% endif %}">
+                    <li style="margin: 5px 0 0 17px; padding: 10px; border: 1px dotted #000; background: none; clear: both; overflow: hidden;">
+                        <h4 style="margin: 0 0 5px 0;">Pracownicy:</h4>
+                        {% for user in employee.users %}
+                        <div style="float: left; width: 100px; border: 1px dotted #000; margin-right: 3px; padding: 5px; text-align: center;">
+                            <a href="{{ url({controller: 'employees', action: 'view', id: user.uid}, 'admin', true) }}">
+                                <img src="{% if user.photo %}{{ user.photo.0.url }}{% else %}{{ baseUrl() }}/images/admin/no-avatar.png{% endif %}" alt="Zdjęcie profilowe" style="width: 100px; height: 80px; overflow: hidden; margin-bottom: 5px; display: block;" />
+                                {{ user.firstname }} {{ user.lastname }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </li>
+            </ul>
+            {% endif %}
+            {% if employees[employee.gid] %}
+            <ul {% if employee.users %}style="margin-top: 0px;"{% endif %}>
+            {{ _self.tree(employee.gid, employees) }}
+            {% endif %}
+            </ul>
+        </li>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+<h3 style="margin: 0 0 3px 3px;"><img src="{{ baseUrl() }}/images/admin/company_small.png" alt="Firma" class="icon" /> Firma</h3>
+<ul id="tree" style="margin-left: 3px;">
+{{ _self.tree(0, employees) }}  
+</ul>
+        
+    </div>
+</div>
+
+{% endblock %}

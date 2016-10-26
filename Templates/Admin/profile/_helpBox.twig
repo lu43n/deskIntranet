@@ -1,0 +1,31 @@
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Akcje</h2>
+    <ul>
+        <li>
+            <a href="{{ url({ controller: 'events', action: 'add'}, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/add_small.png" alt="Dodaj aktualność" /> Dodaj wydarzenie</a>
+        </li>
+        {% if request.getActionName() == 'add' or request.getActionName() == 'edit' or request.getActionName() == 'search' %}
+        <li>
+            <a href="{{ url({controller: 'events', action: 'index'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        <li id="delete-events" style="display: none;">
+            <a href="{{ url({controller: 'events', action: 'delete-events'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń zaznaczone" /> Usuń zaznaczone</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div> 
+
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Szukaj</h2>
+    <form action="{{ url({controller: 'events', action: 'search'}, 'admin', true) }}" method="get">
+    <ul class="searchHelpBox">
+        <li>
+            <input type="text" name="keyword" class="searchQuery" />
+        </li>
+    </ul>
+    </form>        
+</div>
+<div class="help_box_end"></div>    

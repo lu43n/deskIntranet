@@ -1,0 +1,43 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'forms', action: 'add-form', id: form.fid}, 'admin'), label: 'Dodawanie formularza'}] %}
+
+    {% for breadcrumb in breadcrumbs %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'forms', id: breadcrumb.fid}, 'admin', true), label: breadcrumb.title}]) %}
+    {% endfor %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'forms'}, 'admin', true), label: 'Formularze'}]) %}
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'forms/_helpBox.twig' %}   
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Dodawanie formularza</h1>
+        {{ cmsForm|raw }}
+
+        <script type="text/javascript">
+        // <[[!CDATA
+            $(document).ready(function(){
+
+                $('.tabs').tabs();  
+
+                $('.ui-tabs-panel').each(function () {
+                        var id = $(this).has('.error').attr('id');
+                        var count = $(this).find('.error').size();
+                        $('a[href="#'+id+'"]').append(' <em>('+ count +')</em>');
+                });
+
+            });
+        // ]]>
+        </script>
+    </div>
+</div>          
+{% endblock %}

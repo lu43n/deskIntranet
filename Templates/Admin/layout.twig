@@ -1,0 +1,153 @@
+{% import "functions.twig" as cms %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="pl" />
+
+    <title>Panel Administracyjny - IntraNet</title>
+
+    <link rel="stylesheet" href="{{ baseUrl() }}/css/admin/jquery.ui.css" type="text/css" />
+    <link rel="stylesheet" href="{{ baseUrl() }}/css/admin/jquery.treetable.css" type="text/css" />
+    <link rel="stylesheet" href="{{ baseUrl() }}/css/admin/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ baseUrl() }}/css/admin/forms.css" type="text/css" />
+   
+    {% block stylesheets %}{% endblock %}
+
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.base.js"></script>
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.ui.js"></script>
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.cookie.js"></script>
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.treetable.js"></script>
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/jquery.idle.js"></script>
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/cms.scripts.js"></script>
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/cms.permissions.js"></script>
+
+    {% if acl.isUserAllowed('intranet') %}
+    <script type="text/javascript">
+    // <[[!CDATA
+        function keepAlive ()
+        {
+            $.ajax({
+                url: "{{ url({controller: 'index', action: 'keepAlive'}, 'admin', true) }}",
+                type: "GET",
+                dataType: "html"
+            })
+        }
+        
+        setInterval("keepAlive()", 180000);
+
+        var chatConfig = {
+            'openChat': '{{ url({controller: 'chat', action: 'ajax-open-chat'}, 'admin', true) }}',
+            'setUserActivity': '{{ url({controller: 'chat', action: 'ajax-set-user-activity'}, 'admin', true) }}',
+            'refreshUsersList': '{{ url({controller: 'chat', action: 'ajax-refresh-users-list'}, 'admin', true) }}',
+            'sendMessage': '{{ url({controller: 'chat', action: 'ajax-send-message'}, 'admin', true) }}',
+            'refreshChats': '{{ url({controller: 'chat', action: 'ajax-refresh-chats'}, 'admin', true) }}',
+            'getInitChatBoxes': '{{ url({controller: 'chat', action: 'ajax-get-init-chat-boxes'}, 'admin', true) }}',
+        };
+    // ]]>
+    </script>
+
+    <script type="text/javascript" src="{{ baseUrl() }}/js/admin/cms.chat.js"></script>
+
+    {% endif %}
+    {% block javascripts %}{% endblock %}
+</head>
+
+<body>
+    <div id="throbber"></div>
+    <div id="notification"></div>
+
+    <div id="wrap">
+        <div id="top">
+                <a href="{{ url({controller: 'index', action: 'index'}, 'admin', true) }}" class="logo"><img src="{{ baseUrl }}/images/admin/panel_logo.png" alt="deskCMS" /></a>
+                {% if acl.isUserAllowed('intranet') %}
+                <ul>
+                    <li><a href="{{ url({controller: 'index', action: 'index'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_home.gif" alt="Pulpit" /> Pulpit</a></li>
+                    <li class="separator"></li>
+                    <li class="dropdown">
+                        <span><img src="{{ baseUrl }}/images/admin/panel_menu_data.png" alt="Moduły" class="icon" /> Zasoby</span>
+                        <ul>
+                            <li><a href="{{ url({controller: 'documents'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_documents.png" alt="Dokumenty" class="icon" /> Dokumenty firmowe</a></li>
+                            <li><a href="{{ url({controller: 'news'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_news.png" alt="Aktualności" class="icon" /> Aktualności</a></li>
+                            <li><a href="{{ url({controller: 'events'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_events.png" alt="Kalendarz wydarzeń" class="icon" /> Kalendarz wydarzeń</a></li>
+                        </ul>
+                    </li>
+                    <li class="separator"></li>
+                    <li class="dropdown">
+                        <span><img src="{{ baseUrl }}/images/admin/panel_menu_structure.png" alt="Moduły" class="icon" /> Struktura</span>
+                        <ul>
+                            <li><a href="{{ url({controller: 'employees'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_employees.png" alt="Struktura firmy" class="icon" /> Struktura firmy</a></li>
+                        </ul>
+                    </li>
+                    <li class="separator"></li>
+                    <li class="dropdown">
+                        <span><img src="{{ baseUrl }}/images/admin/panel_menu_administration.png" alt="Administracja" class="icon" /> Administracja</span>
+                        <ul>
+                            <li><a href="{{ url({controller: 'forms'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/forms_small.png" style="position: relative; top: 5px;" alt="Formularze" /> Formularze</a></li>
+                            <li><a href="{{ url({controller: 'users'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/group_small.png" style="position: relative; top: 5px;" alt="Użytkownicy" /> Użytkownicy</a></li>
+                            <li><a href="{{ url({controller: 'dictionary'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/dictionary_small.png" style="position: relative; top: 5px;" alt="Słownik" /> Słownik</a></li>
+                            <li><a href="{{ url({controller: 'permissions'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_permissions.png" style="position: relative; top: 5px;" alt="Uprawnienia" /> Uprawnienia</a></li>
+                            <li><a href="{{ url({controller: 'settings'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_settings.gif" alt="Ustawienia" /> Ustawienia</a></li>
+                        </ul>
+                    </li>
+                    <li class="separator"></li>
+                    <li><a href="{{ url({controller: 'support'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/panel_menu_help.gif" alt="Pomoc" /> Pomoc</a></li>
+                </ul>
+                {% endif %}
+        </div>
+
+        <div id="main">
+
+            {% if acl.isUserAllowed('intranet') %}
+            <div class="left-side">
+                <div class="help_box">
+                    
+                    <div class="logininfo">
+                        Zalogowany jako:<br/>
+                        <a href="{{ url({controller: 'profile'}, 'admin', true) }}" class="login"><img src="{{ baseUrl }}/images/admin/panel_user.gif" alt="Profil: {{ identity.firstname }} {{ identity.lastname }}" /> {{ identity.firstname }} {{ identity.lastname }}</a>
+                        <a href="{{ url({controller: 'pm'}, 'admin', true) }}">Wiadmości ({{ newPmMessages|default(0) }})</a> | <a href="{{ url({controller: 'login', action: 'logout'}, 'admin', true) }}">Wyloguj</a>
+                    </div>
+
+                </div>
+                <div class="help_box_end"></div>
+
+                {% block helpbox %}{% endblock %}
+
+                <div class="help_box_start"></div>
+                <div class="help_box" id="chatsList">
+                    <h2 style="padding-top: 0;">Czat</h2>
+                    <ul class="list">
+                        {% for user in usersList %}
+                        <li class="{{ user.state }}">
+                            <a href="#" data-action="open" data-recipientid="{{ user.uid }}">
+                                <span>{{ user.firstname }} {{ user.lastname }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <ul>
+                        <li><hr style="border: none; border-top: 1px dotted #ddd; width: 90%;" /></li>
+                        <li><a href="{{ url({controller: 'chat'}, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/all_chats.png" alt="Wszystkie wiadomości" />  Wszystkie konwersacje</a></li>
+                    </ul>
+                </div>
+                <div class="help_box_end"></div> 
+
+            </div>
+            
+            <div class="right-side breadcrumbs">
+                {% block breadcrumbs %}{% endblock %}
+            </div>
+            
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+
+            <div id="chatBoxes" class="right-side"></div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

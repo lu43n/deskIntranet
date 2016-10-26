@@ -1,0 +1,20 @@
+<div class="chatBox" id="chat-{{ recipient.uid }}">
+    <div class="head">
+        <h3><a href="#"  data-action="toggle" data-chatid="{{ recipient.uid }}">{{ recipient.firstname }} {{ recipient.lastname }}</a></h3>
+        <div class="options">
+            <a href="#" data-action="toggle" data-chatid="{{ recipient.uid }}">-</a>
+            <a href="#" data-action="close" data-chatid="{{ recipient.uid }}">X</a>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="chat">
+            {% for chat in chats %}
+            <div class="message {% if chat.sender_id == identity.uid %}sender{% endif %}">
+                <span class="from">{% if chat.sender_id == identity.uid %}{{ chat.sender_name }}{% else %}{{ chat.sender_name }}{% endif %}: <span class="date">{{ chat.sent_at }}</span></span>
+                <span class="message">{{ chat.message|raw }}</span>
+            </div> 
+            {% endfor %}
+        </div>
+        <textarea data-chatid="{{ recipient.uid }}"></textarea>
+    </div>
+</div>

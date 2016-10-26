@@ -1,0 +1,139 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'news', action: 'search', keyword: keyword}, 'admin'), label: 'Wyszukiwanie frazy "'~ keyword ~'"'}] %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'news'}, 'admin', true), label: 'Biuletyn'}]) %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+    $(document).ready(function(){    
+
+        // Forms JavaScript
+
+        var deleteNewsButton = $('#delete-newses');
+
+        $('#delete-newses').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'news', action: 'delete-news'}, 'admin', true) }}";
+            var params    = { id: $('input[name="news[]"]').serializeArray() };
+            var list      = { item: '#news_', items: '#listNews' }
+
+            var callback = function () {
+                if($('input[name="news[]"]:checked').length == 0)
+                {
+                    deleteNewsButton.hide();
+                }
+                else
+                {
+                    deleteNewsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('a[name="delete-news"]').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'news', action: 'delete-news'}, 'admin', true) }}";
+            var params    = { id: { 0: { value: $(this).attr('rel') } } };
+            var list      = { item: '#news_', items: '#listNews' }
+
+            var callback = function () {
+                if($('input[name="news[]"]:checked').length == 0)
+                {
+                    deleteNewsButton.hide();
+                }
+                else
+                {
+                    deleteNewsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('input[name="news[]"]').change(function(){
+            if($('input[name="news[]"]:checked').length == 0)
+            {
+                deleteNewsButton.hide();
+            }
+            else
+            {
+                deleteNewsButton.show();
+            }
+        });
+
+        $('button[name="select-news"]').click(function () {      
+            cms.toggleSelect('input[name="news[]"]');
+
+            if($('input[name="news[]"]:checked').length == 0)
+            {
+                deleteNewsButton.hide();
+            }
+            else
+            {
+                deleteNewsButton.show();
+            }
+        });      
+    });
+    </script>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'news/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Wyniki wyszukiwania aktualności dla frazy "{{ keyword }}":</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}           
+        
+        <ol class="listView" id="listNews">
+            {% for news in newses %}
+            <li class="item {{ cycle(['', 'odd'], loop.index0) }}" id="news_{{ news.nid }}">
+                <div class="normal">
+                    <input type="checkbox" name="news[]" value="{{ news.nid }}" />
+                    <a href="{{ url({ controller: 'news', action: 'view', id: news.nid }, 'admin', true) }}">{{ news.translation.title }}</a>
+                    <span class="actionBox">
+                        <a href="{{ url({ controller: 'news', action: 'edit', id: news.nid }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/edit_small.png" alt="Edytuj" /> Edytuj</a> | 
+                        <a href="{{ url({ controller: 'news', action: 'delete', id: news.nid }, 'admin', true) }}" name="delete-news" rel="{{ news.nid }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń" /> Usuń</a>
+                    </span>
+                </div>
+                <div class="extend">
+                    Autor: <strong>{{ news.user.firstname }} &lt;{{ news.user.username }}&gt; {{ news.user.lastname }}</strong> &nbsp; Data utworzenia: <strong>{{ news.created_at }}</strong>
+                </div>
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        
+        <div style="margin-top: 15px;">
+            <button name="select-news" class="button">Zaznacz/Odznacz wszystkie</button>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}

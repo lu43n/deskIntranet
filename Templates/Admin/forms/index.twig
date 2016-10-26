@@ -1,0 +1,152 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [] %}
+
+    {% for breadcrumb in breadcrumbs %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'forms', id: breadcrumb.fid}, 'admin', true), label: breadcrumb.title}]) %}
+    {% endfor %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'forms'}, 'admin', true), label: 'Formularze'}]) %}
+
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+    $(document).ready(function(){    
+
+        // Forms JavaScript
+
+        var deleteFormsButton = $('#delete-forms');
+
+        $('#delete-forms').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'forms', action: 'delete-forms'}, 'admin', true) }}";
+            var params    = { id: $('input[name="forms[]"]').serializeArray() };
+            var list      = { item: '#form_', items: '#listForms' }
+
+            var callback = function () {
+                if($('input[name="forms[]"]:checked').length == 0)
+                {
+                    deleteFormsButton.hide();
+                }
+                else
+                {
+                    deleteFormsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('a[name="delete-form"]').click(function () {
+             
+            var actionUrl = "{{ url({controller: 'forms', action: 'delete-forms'}, 'admin', true) }}";
+            var params    = { id: { 0: { value: $(this).attr('rel') } } };
+            var list      = { item: '#form_', items: '#listForms' }
+
+            var callback = function () {
+                if($('input[name="forms[]"]:checked').length == 0)
+                {
+                    deleteFormsButton.hide();
+                }
+                else
+                {
+                    deleteFormsButton.show();
+                }
+            }
+
+            cms.delete(actionUrl, params, list, callback);
+
+            return false;
+        });
+
+        $('input[name="forms[]"]').change(function(){
+            if($('input[name="forms[]"]:checked').length == 0)
+            {
+                deleteFormsButton.hide();
+            }
+            else
+            {
+                deleteFormsButton.show();
+            }
+        });
+
+        $('button[name="select-forms"]').click(function () {      
+            cms.toggleSelect('input[name="forms[]"]');
+
+            if($('input[name="forms[]"]:checked').length == 0)
+            {
+                deleteFormsButton.hide();
+            }
+            else
+            {
+                deleteFormsButton.show();
+            }
+        });         
+    });
+    </script>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'forms/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Lista formularzy:</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}           
+
+        <ol class="listView" id="listForms">
+            {% if form %}
+            <li>    
+                <div>
+                    <a href="{{ url({ controller: 'forms', action: 'index', id: form.parent_id }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/folderup_small.png" alt="Przejdź poziom wyżej" class="icon" /> &nbsp;Przejdź poziom wyżej</a>
+                </div>
+            </li>
+            {% endif %}
+            {% for form in forms %}
+            <li class="item {{ cycle(['', 'odd'], loop.index0) }}" id="form_{{ form.fid }}">
+                <div class="normal">
+                    <input type="checkbox" name="forms[]" value="{{ form.fid }}" />
+                    <a href="{{ url({ controller: 'forms', action: 'index', id: form.fid }, 'admin', true) }}">{{ form.translation.title }}</a>
+                    <span class="actionBox">
+                        <a href="{{ url({ controller: 'forms', action: 'view-fields', id: form.fid }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/forms_edit_small.png" alt="Przeglądaj pola" /> Przeglądaj pola</a> | 
+                        <a href="{{ url({ controller: 'forms', action: 'edit-form', id: form.fid }, 'admin', true) }}"><img src="{{ baseUrl }}/images/admin/edit_small.png" alt="Edytuj" /> Edytuj</a> | 
+                        <a href="{{ url({ controller: 'forms', action: 'delete-forms', id: form.fid }, 'admin', true) }}" name="delete-form" rel="{{ form.fid }}"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń" /> Usuń</a>
+                    </span>
+                </div>
+                <div class="extend">
+                    Ilość formularzy: <strong>{{ form.count_forms }}</strong> &nbsp; Ilość pól formularza: <strong>{{ form.count_fields }}</strong>
+                </div>
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        <div style="margin-top: 15px;">
+            <button name="select-forms" class="button">Zaznacz/Odznacz wszystkie</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

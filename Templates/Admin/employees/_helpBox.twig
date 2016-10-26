@@ -1,0 +1,25 @@
+{% if request.getActionName() == 'view' or request.getActionName() == 'search' %}
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Akcje</h2>
+    <ul>
+        <li>
+            <a href="{{ url({controller: 'employees', action: 'index'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div> 
+{% endif %}
+
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Szukaj</h2>
+    <form action="{{ url({controller: 'employees', action: 'search'}, 'admin', true) }}" method="get">
+    <ul class="searchHelpBox">
+        <li>
+            <input type="text" name="keyword" class="searchQuery" />
+        </li>
+    </ul>
+    </form>        
+</div>
+<div class="help_box_end"></div>    

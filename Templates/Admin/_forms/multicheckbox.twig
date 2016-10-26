@@ -1,0 +1,7 @@
+<div style="overflow: hidden;">
+{% for optionValue, option in options %}
+<label class="checkbox" style="float: left; width: 300px;">
+        <input type="checkbox" name="{{ name }}" id="{{ name }}" value="{{ optionValue }}" {% if optionValue in values %}checked="checked"{% endif %} {% if attributes %}{% for attribute, value in attributes %}{{ attribute }}="{{ value|e }}"{% endfor %}{% endif %} /> {{ option }}
+</label>
+{% endfor %}
+</div>

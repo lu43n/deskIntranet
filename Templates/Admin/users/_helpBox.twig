@@ -1,0 +1,65 @@
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Grupy</h2>
+    <ul>
+        {% if request.getActionName() == 'index' and group.gid %}
+        <li>
+            <a href="{{ url({ controller: 'users', action: 'index', id: group.parent_id }, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/folderup_small.png" alt="Przejdź poziom wyżej" /> Przejdź poziom wyżej</a>
+        </li>
+        {% endif %}
+        <li>
+            <a href="{{ url({ controller: 'users', action: 'add-group', id: group.gid }, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/add_small.png" alt="Dodaj grupę" /> Dodaj grupę</a>
+        </li>
+        {% if request.getActionName() == 'add-group' %}
+        <li>
+            <a href="{{ url({controller: 'users', action: 'index', id: group.gid}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        {% if request.getActionName() == 'edit-group' %}
+        <li>
+            <a href="{{ url({controller: 'users', action: 'index', id: group.parent_id}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        <li id="delete-groups" style="display: none;">
+            <a href="{{ url({controller: 'users', action: 'delete-groups'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń zaznaczone" /> Usuń zaznaczone</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div> 
+
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Użytkownicy</h2>
+    <ul>
+        <li>
+            <a href="{{ url({controller: 'users', action: 'add-user', id: group.gid}, 'admin', true) }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/add_small.png" alt="Dodaj użytkownika" /> Dodaj użytkownika</a>
+        </li>
+        {% if request.getActionName() == 'add-user' %}
+        <li>
+            <a href="{{ url({controller: 'users', action: 'index', id: group.gid}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        {% if request.getActionName() == 'edit-user' %}
+        <li>
+            <a href="{{ url({controller: 'users', action: 'index', id: user.gid.0}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/back_small.png" alt="Powrót" /> Powrót do listy</a>
+        </li>
+        {% endif %}
+        <li id="delete-users" style="display: none;">
+            <a href="{{ url({controller: 'users', action: 'delete-users'}, 'admin') }}" style="font-weight:bold;"><img src="{{ baseUrl }}/images/admin/delete_small.png" alt="Usuń zaznaczone" /> Usuń zaznaczone</a>
+        </li>
+    </ul>
+</div>
+<div class="help_box_end"></div>
+
+<div class="help_box_start"></div>
+<div class="help_box">
+    <h2 style="padding-top: 0;">Szukaj</h2>
+    <form action="{{ url({controller: 'users', action: 'search'}, 'admin', true) }}" method="get">
+    <ul class="searchHelpBox">
+        <li>
+            <input name="keyword" type="text" class="searchQuery" value="{{ keyword }}" />
+        </li>
+    </ul>
+    </form>        
+</div>
+<div class="help_box_end"></div>   

@@ -1,0 +1,64 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'employees'}, 'admin', true), label: 'Struktura pracowników'}] %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+    $(document).ready(function(){   
+        
+        $('#userData a[href="#openChat"]').click(function () {
+            chat.openChat($(this).attr('rel'));
+            return false;
+        });
+     
+    });
+    </script>
+{% endblock %}
+    
+{% block stylesheets %}
+    <style type="text/css">
+            #userData {
+                margin: 10px 0 0 0;
+            }
+            #userData li {
+                list-style: none;
+                font-size: 14px;
+                margin: 10px 0;
+            }
+    </style>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'employees/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Profil {{ user.firstname }} {{ user.lastname }} ({{ user.username }}):</h1>
+        <div style="clear: both; overflow: hidden;">
+            <img src="{% if user.photo %}{{ user.photo.0.url }}{% else %}{{ baseUrl() }}/images/admin/no-avatar.png{% endif %}" alt="Zdjęcie profilowe" style="float: left; width: 460px; margin: 0 15px 15px 0;" />
+            <ul id="userData">
+                <li>Imię i nazwisko:<br/> <strong>{{ user.firstname }} {{ user.lastname }}</strong></li>
+                <li>Nazwa użytkownika:<br/> <strong>{{ user.username }}</strong></li>
+                {% if user.mobile %}
+                <li>Numer telefonu:<br/> <strong>{{ user.mobile }}</strong></li>
+                {% endif %}
+                <li>&nbsp;</li>
+                <li>Ostatnie logowanie:<br/> <strong>{{ user.last_login }}</strong></li>
+                <li>Data rejestracji:<br/> <strong>{{ user.created_at }}</strong></li>
+                <li>&nbsp;</li>
+                {% if user.uid != identity.uid %}
+                <li><strong><a href="{{ url({controller: 'pm', action: 'create', recipient: user.uid}, 'admin', true) }}"><img src="{{ baseUrl() }}/images/admin/send_small.png" alt="Wyślij wiadomość prywatną" class="icon" /> Wyślij wiadomość prywatną</a></strong></li>
+                <li><strong><a href="#openChat" rel="{{ user.uid }}"><img src="{{ baseUrl() }}/images/admin/all_chats.png" alt="Rozpocznij czat" class="icon" /> Rozpocznij czat</a></strong></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

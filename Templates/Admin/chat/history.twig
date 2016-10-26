@@ -1,0 +1,105 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'dictionary', action: 'history', keyword: keyword}, 'admin'), label: 'Czat z użytkownikiem ' ~ user.firstname ~ ' ' ~ user.lastname }] %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'chat'}, 'admin', true), label: 'Wiadomości'}]) %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block javascripts %}    
+    <script type="text/javascript">
+    $(document).ready(function(){    
+
+        // Chats JavaScript
+        
+        $('#chatHistory li').live('mouseover',function () {
+            $(this).find('.chatDate').show();
+        });
+        
+        $('#chatHistory li').live('mouseout', function () {
+            $(this).find('.chatDate').hide();
+        });
+
+        $('#chatHistory').animate({scrollTop: 9999999},200);
+        
+        $('#chatHistory').scroll(function (event) {
+            
+            if($(this).scrollTop() == 0)
+            {
+                height = $(this).prop("scrollHeight");
+
+                $.ajax({
+                    url: "{{ url({ controller: 'chat', action: 'ajax-get-chat-history-partial' }, 'admin', true) }}",
+                    type: "POST",
+                    dataType: "json",
+                    data: { limit: $('#chatHistory').data('limit'), id: {{ user.uid }} },
+                    success: function (data) 
+                    {
+                        if(data && data.type == 'success')
+                        {
+                            $('#chatHistory').prepend(data.html);
+                            $('#chatHistory').data('limit', $('#chatHistory').data('limit') + 20);
+                            $('#chatHistory').scrollTop(($('#chatHistory').prop("scrollHeight") - height));
+
+
+                        }
+                    }
+                });
+            }
+            
+            event.stopPropagation();
+    
+        });
+
+    
+    });
+    </script>
+{% endblock %}
+    
+{% block helpbox %}
+    {% include 'chat/_helpBox.twig' %}
+{% endblock %}
+    
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Lista wiadomości:</h1>
+        
+        {% if flashMessages %}
+        <div class="messages">
+            {% for message in flashMessages %}
+                <div class="message {{ message.type }}">
+                    {{ message.message }}
+                </div> 
+            {% endfor %}
+        </div>
+        {% endif %}           
+
+        <ol id="chatHistory" data-limit="{{ chats|length }}">
+            {% for chat in chats %}
+            <li {% if chat.sender_id == identity.uid %}class="sender"{% endif %}>
+                <div class="chatFrom">
+                    {% if chat.sender_id == identity.uid %}
+                    <a href="{{ url({ controller: 'employees', id: chat.recipient_id }, 'admin', true) }}">{{ chat.sender_name }}</a>
+                    {% else %}
+                    <a href="{{ url({ controller: 'employees', id: chat.recipient_id }, 'admin', true) }}">{{ chat.recipient_name }}</a>
+                    {% endif %}  napisał(a):
+                    <span class="chatDate">{{ chat.sent_at }}</span>
+                </div>
+                <div class="chatMessage">
+                    {{ chat.message|raw }}
+                </div>
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+
+{% endblock %}

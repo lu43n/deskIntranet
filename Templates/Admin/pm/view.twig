@@ -1,0 +1,83 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'pm', action: 'view', id: message.pmid}, 'admin'), label: 'Podgląd wiadomości "' ~ message.subject ~ '"'}] %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'pm'}, 'admin', true), label: 'Wiadomości prywatne'}]) %}
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'pm/_helpBox.twig' %}   
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <div class="form" style="border-bottom: 1px solid #ccc;">
+            <div class="element buttons" style="margin: 0;">
+                <button type="button" onclick="window.location.href='{{ url({controller: 'pm', action: 'index'}, 'admin', true) }}';" style="float: none;">&laquo; Powrót do listy</button> &nbsp; 
+                <button type="button" onclick="window.location.href='{{ url({controller: 'pm', action: 'create', recipient: message.sender}, 'admin', true) }}';" style="float: none;">Utwórz nową wiadomość</button>
+                <button type="button" onclick="window.location.href='{{ url({controller: 'pm', action: 'reply', message: message.pmid}, 'admin', true) }}#form';" style="float: none;">Odpowiedz</button>
+            </div>
+        </div>
+
+        <h1 style="border: none; margin: 15px 0;">{{ message.subject }}</h1>
+        <div style="margin: 0 0 10px 5px;">
+            <div style="padding: 5px 5px 10px 5px; border-bottom: 1px solid #ccc;">
+                <a href=""><img src="{{ baseUrl }}/images/admin/panel_user.gif" class="icon" /> <strong>{{ message.sender_name }}</strong></a> napisał(a):
+                <div style="float: right; padding: 3px; color: #333;">
+                    {{ message.sent_at }}
+                </div>
+            </div>
+            <div style="padding: 15px 5px 15px 5px; border-bottom: 1px solid #ccc;">
+                {{ message.message|raw }}
+            </div>
+            {% if message.attachments %}
+            <div style="padding: 5px;">
+                <strong>Liczba załączników: {{ message.attachments|length }}</strong>
+                <ol style="margin-top: 5px;">
+                    {% for attachment in message.attachments %}
+                    <li style="list-style: none; padding: 5px;">
+                        <strong>{{ attachment.name }}</strong><br/>
+                        <a href="{{ attachment.url }}" target="_blank">Pobierz</a>
+                    </li>
+                    {% endfor %}
+                </ol>
+            </div>
+            {% endif %}
+        </div>
+        {% if replies %}
+        <h3 style="margin-left: 15px; padding-bottom: 3px; border-bottom: 1px solid #ddd;">Odpowiedzi:</h3>
+
+            {% for reply in replies %}
+                <div style="margin-left: 15px; margin-top: 10px; background: {{ cycle(['#ddd', '#eee'], loop.index0) }};">
+                    <div style="padding: 5px;">
+                        <a href=""><img src="{{ baseUrl }}/images/admin/panel_user.gif" class="icon" /> <strong>{{ reply.sender_name }}</strong></a> napisał(a):
+                        <div style="float: right; padding: 3px; color: #333;">
+                            {{ reply.sent_at }}
+                        </div>
+                    </div>
+                    <div style="padding: 15px 5px 15px 5px; border-top: 1px solid #ccc;">
+                        {{ reply.message|raw }}
+                    </div>
+                    {% if reply.attachments %}
+                    <div style="padding: 5px; border-top: 1px solid #ccc;">
+                        <strong>Liczba załączników: {{ reply.attachments|length }}</strong>
+                        <ol style="margin-top: 5px;">
+                            {% for attachment in reply.attachments %}
+                            <li style="list-style: none; padding: 5px;">
+                                <strong>{{ attachment.name }}</strong><br/>
+                                <a href="{{ attachment.url }}" target="_blank">Pobierz</a>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+</div>          
+{% endblock %}

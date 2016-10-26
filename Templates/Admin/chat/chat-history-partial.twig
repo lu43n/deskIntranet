@@ -1,0 +1,11 @@
+{% for chat in chats %}
+<li {% if chat.recipient_id == identity.uid %}class="sender"{% endif %}>
+    <div class="chatFrom">
+        <a href="{{ url({ controller: 'employees', id: chat.recipient_id }, 'admin', true) }}">{{ chat.recipient_name }}</a> napisał(a):
+        <span class="chatDate">{{ chat.sent_at }}</span>
+    </div>
+    <div class="chatMessage">
+        {{ chat.message|raw }}
+    </div>
+</li>
+{% endfor %}

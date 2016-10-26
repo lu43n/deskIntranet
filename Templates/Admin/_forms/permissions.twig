@@ -1,0 +1,50 @@
+{% macro tree(id, options, name, values, attributes, acl) %}
+    {% if options[id] %}
+        {% for option in options[id] %}     
+
+            {% if values[option.id] == "1" %}
+                {% set state = { 'next': 'checkbox-deny', current: 'checkbox-allow', value: '1' } %}
+            {% elseif values[option.id] == "0" %}
+                {% set state = { 'next': 'checkbox', current: 'checkbox-deny', value: '0' } %}
+            {% else %}
+                {% set state = { 'next': 'checkbox-allow', current: 'checkbox', value: '' } %}
+            {% endif %}
+
+                <tr id="node-{{ option.id }}" data-id="{{ option.id }}" {% if option.parent_id %}class="child-of-node-{{ option.parent_id }}" data-parentid="{{ option.parent_id }}"{% endif %}>
+                    <td>
+                        <input type="hidden" name="{{ name }}[{{ option.value }}]" id="{{ name }}-{{ option.value }}" value="{{ state.value }}" />
+                        <span data-nextstate="{{ state.next }}" data-input="{{ name }}-{{ option.value }}" data-id="{{ option.id }}" {% if option.parent_id %}data-parentid="{{ option.parent_id }}"{% endif %} class="{{ state.current }}">{{ option.title }}</span>
+                    </td>
+                </tr>
+                {{ _self.tree(option.id, options, name, values, attributes, acl) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+<div>  
+    <table id="treeTable-{{ name }}" class="tableView treeTable" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Zasób</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{ _self.tree(0, options, name, values, attributes, acl) }}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+    // <[[!CDATA
+        $(document).ready(function(){
+            $("#treeTable-{{ name }}").treeTable({ initialState: 'expanded' });
+
+            permissions.init('#treeTable-{{ name }}');
+
+            $('#treeTable-{{ name }} .checkbox, #treeTable-{{ name }} .checkbox-allow, #treeTable-{{ name }} .checkbox-deny').click(function () {
+                permissions.click($(this));
+                return false;
+            });
+        });
+    // ]]>
+    </script>
+</div>

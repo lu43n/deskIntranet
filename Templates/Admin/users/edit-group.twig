@@ -1,0 +1,63 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'users', action: 'edit-group', id: group.gid}, 'admin'), label: 'Edytowanie grupy'}] %}
+
+    {% for breadcrumb in breadcrumbs %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'users', id: breadcrumb.gid}, 'admin', true), label: breadcrumb.group_title}]) %}
+    {% endfor %}
+
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'users'}, 'admin', true), label: 'Użytkownicy'}]) %}
+
+
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include('users/_helpBox.twig') %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">
+        <h1>Edytowanie grupy: </h1>
+        <form class="form" action="" method="post">
+            <div class="tabs">
+                <ul>      
+                    <li><a href="#tab_1">Podstawowe dane</a></li>    
+                    <li><a href="#tab_2">Uprawnienia</a></li>
+                </ul>
+
+                <div id="tab_1">{{ groupForm|raw }}</div>
+                <div id="tab_2">{{ permissionsForm|raw }}</div>
+            </div>
+
+            <div class="form">
+                <fieldset>   
+                    <div class="buttons" style="margin: 0 5px 0 0;">
+                        <button type="submit" name="save" helper="">Zapisz</button>
+                    </div>
+                </fieldset>
+            </div> 
+        </form>
+
+        <script type="text/javascript">
+        // <[[!CDATA
+            $(document).ready(function(){
+
+                $('.tabs').tabs();  
+
+                $('.ui-tabs-panel').each(function () {
+                        var id = $(this).has('.error').attr('id');
+                        var count = $(this).find('.error').size();
+                        $('a[href="#'+id+'"]').append(' <em>('+ count +')</em>');
+                });
+
+            });
+        // ]]>
+        </script>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "layout.twig" %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbsList = [{url: url({controller: 'employees', action: 'search', keyword: keyword}, 'admin', true), label: 'Wyszukiwanie frazy "'~keyword~'"'}] %}
+    {% set breadcrumbsList = breadcrumbsList|merge([{url: url({controller: 'employees'}, 'admin', true), label: 'Struktura pracowników'}]) %}
+    {{ cms.breadcrumbs(breadcrumbsList) }}
+{% endblock %}
+
+{% block helpbox %}
+    {% include 'employees/_helpBox.twig' %}
+{% endblock %}
+
+{% block content %}                   
+
+<div class="right-side">
+    <div class="content">       
+        <h1>Wyniki wyszukiwania pracowników dla frazy '{{ keyword }}':</h1>     
+
+        <ol class="listView" id="listUsers">
+            {% for i, user in users %}
+            <li class="item {{ cycle(['', 'odd'], i) }}" id="user_{{ user.uid }}">
+                <div class="normal">
+                    <a href="{{ url({ controller: 'employees', action: 'view', id: user.uid }, 'admin', true) }}">{% if user.firstname == '' and user.lastname == '' %}(Brak nazwy){% endif %}{{ user.firstname }} {{ user.lastname }}</a>
+                </div>
+                <div class="extend" style="padding-left: 2px;">
+                    Login: <strong>{{ user.username }}</strong> &nbsp; Telefon: <strong>{{ user.mobile|default('brak') }}</strong>
+                </div>
+            </li>
+            {% else %}
+            <li class="empty">
+                <div>
+                    Brak rekordów
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+
+{% endblock %}

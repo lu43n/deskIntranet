@@ -1,0 +1,72 @@
+<script type="text/javascript">
+$(document).ready(function () {
+        $( ".sortable" ).sortable({ 
+            axis: 'y', 
+            cursor: 'move',
+            cancel: '.empty',
+            stop: function(event, ui) { 
+                $($(this).children('li')).each(function(index, value) {
+                    $(this).removeClass('odd');
+
+                    if(index % 2)
+                    {
+                        $(this).addClass('odd'); 
+                    }
+                }); 
+            }
+        });
+        
+    $('#{{ element_id }}_deleteOption').live('click', function () {
+        $(this).parent('li').remove();
+    });
+
+    $('#{{ element_id }}_addOption').click(function () {
+
+        if($('#{{ element_id }}_title').val() == '' || $('#{{ element_id }}_value').val() == '')
+        {
+            return false;
+        }    
+   
+        var value = encodeURIComponent($('#{{ element_id }}_value').val()) + ":" + encodeURIComponent($('#{{ element_id }}_title').val());
+        var html  = '<li id="{{ element_id }}_item" class="element-list-item"><span>'+ $('#{{ element_id }}_title').val() +'</span>: '+ $('#{{ element_id }}_value').val() +' <a href="#deleteItem" id="{{ element_id }}_deleteOption"><img src="{{ baseUrl }}/images/admin/delete_small.png" style="position: relative; top: 3px; float: right;" alt="Usuń" /></a> <input type="hidden" name="{{ name }}" id="{{ name }}" value="' + value + '" {% if attributes %}{% for attribute, value in attributes %}{{ attribute }}="{{ value|e }}"{% endfor %}{% endif %} /></li>';
+
+        $('#{{ element_id }}_items').append(html);
+        
+        $('#{{ element_id }}_items').children('li').each(function(index, value) {
+            $(this).removeClass('odd');
+
+            if(index % 2)
+            {
+                $(this).addClass('odd'); 
+            }
+        }); 
+        
+        $('#{{ element_id }}_title, #{{ element_id }}_value').attr('value', '');
+        
+        return false;
+    });
+
+});
+</script>
+
+<table style="margin: 3px 0 6px 0;">
+    <tr>
+        <td>Wartość</td>
+        <td>Tytuł</td>
+    </tr>
+    <tr>
+        <td><input type="text" id="{{ element_id }}_title" style="width: 100px;" /></td>
+        <td><input type="text" id="{{ element_id }}_value" style="width: 100px;" /></td>
+        <td rowspan="2"><button id="{{ element_id }}_addOption" style="border: 1px solid #ccc; background: #F5F5F5; color: #565656; font-weight: bold; padding: 2px;">Dodaj opcję</button></td>
+    </tr>
+</table>
+
+<ol id="{{ element_id }}_items" class="sortable" style="border-top: 1px solid #ccc; width: 400px;">
+{% for title, value in values %}
+        <li id="{{ element_id }}_item" class="element-list-item {{ cycle(['', 'odd'], loop.index) }}">
+            <span>{{ title }}</span>: {{ value }}
+            <a href="#deleteItem" id="{{ element_id }}_deleteOption"><img src="{{ baseUrl }}/images/admin/delete_small.png" style="position: relative; top: 3px; float: right;" alt="Usuń" /></a>
+            <input type="hidden" name="{{ name }}" id="{{ name }}" value="{{ value|url_encode() }}:{{ title|url_encode() }}" {% if attributes %}{% for attribute, value in attributes %}{{ attribute }}="{{ value|e }}"{% endfor %}{% endif %} />
+        </li>
+{% endfor %}
+</ol>
